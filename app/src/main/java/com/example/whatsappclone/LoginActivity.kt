@@ -1,10 +1,20 @@
 package com.example.whatsappclone
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.whatsappclone.databinding.ActivityLoginBinding
+import com.google.android.gms.auth.api.credentials.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.security.AccessController.getContext
+import java.util.*
+
+
+const val CREDENTIAL_PICKER_REQUEST = 1
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var phoneNumber: String
@@ -14,11 +24,36 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        requestHint()
         binding.phoneNumberEt.addTextChangedListener {
             binding.nextBtn.isEnabled = !(it.isNullOrEmpty() || it.length < 10)
         }
         binding.nextBtn.setOnClickListener {
             checkNumber()
+        }
+    }
+
+    private fun requestHint() {
+        val hintRequest = HintRequest.Builder()
+            .setHintPickerConfig(
+                CredentialPickerConfig.Builder()
+                    .setShowCancelButton(true)
+                    .build()
+            )
+            .setPhoneNumberIdentifierSupported(true)
+            .build()
+        val intent = Credentials.getClient(this).getHintPickerIntent(hintRequest)
+        startIntentSenderForResult(intent.intentSender, CREDENTIAL_PICKER_REQUEST, null, 0, 0, 0)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CREDENTIAL_PICKER_REQUEST && resultCode == RESULT_OK) {
+            val credentials: Credential? = data?.getParcelableExtra(Credential.EXTRA_KEY)
+            binding.phoneNumberEt.setText(credentials?.id?.substring(3))
+        } else if (requestCode == CREDENTIAL_PICKER_REQUEST && resultCode == CredentialsApi.ACTIVITY_RESULT_NO_HINTS_AVAILABLE) {
+            Log.i("TAG","Google Play Services Error")
         }
     }
 
@@ -48,6 +83,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showOtpActivity() {
-
+        startActivity(Intent(this, OtpActivity::class.java).putExtra(PHONE_NUMBER, phoneNumber))
+        finish()
     }
 }
