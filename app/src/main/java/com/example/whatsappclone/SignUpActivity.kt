@@ -16,10 +16,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageActivity
+import com.theartofdev.edmodo.cropper.CropImageView
 
 class SignUpActivity : AppCompatActivity() {
     lateinit var binding: ActivitySignUpBinding
     lateinit var downloadUrl: String
+    lateinit var thumbnailUrl: String
+
     val storage by lazy {
         FirebaseStorage.getInstance()
     }
@@ -29,6 +34,7 @@ class SignUpActivity : AppCompatActivity() {
     val database by lazy {
         FirebaseFirestore.getInstance()
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
@@ -37,21 +43,24 @@ class SignUpActivity : AppCompatActivity() {
             checkPermissionForImage()
         }
         binding.nextBtn.setOnClickListener {
-            binding.nextBtn.isEnabled=false
-            val name=binding.nameEt.text.toString()
-            if(name.isEmpty()){
-                Toast.makeText(this,"Name cannot by empty",Toast.LENGTH_LONG).show()
-            }else if(!::downloadUrl.isInitialized){
-                Toast.makeText(this,"Image cannot by empty",Toast.LENGTH_LONG).show()
-            }else{
-                val user=User(name,downloadUrl,downloadUrl,auth.uid!!)
+            binding.nextBtn.isEnabled = false
+            val name = binding.nameEt.text.toString()
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Name cannot by empty", Toast.LENGTH_LONG).show()
+            } else if (!::downloadUrl.isInitialized) {
+                Toast.makeText(this, "Image cannot by empty", Toast.LENGTH_LONG).show()
+            } else {
+                val user = User(name, downloadUrl, thumbnailUrl, auth.uid!!)
                 database.collection("users").document(auth.uid!!).set(user).addOnSuccessListener {
-                    startActivity(Intent(this,MainActivity::class.java))
+                    startActivity(Intent(this, MainActivity::class.java))
                 }.addOnFailureListener {
-                    binding.nextBtn.isEnabled=true
+                    binding.nextBtn.isEnabled = true
                 }
             }
         }
+    }
+
+    override fun onBackPressed() {
     }
 
     private fun checkPermissionForImage() {
@@ -86,11 +95,23 @@ class SignUpActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == 1000) {
-            data?.data?.let {
-                binding.userImgView.setImageURI(it)
-                uploadImage(it)
+            val imageUri = data?.data
+            startCrop(imageUri)
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            if (resultCode == RESULT_OK) {
+                binding.userImgView.setImageURI(result.uri)
+                uploadImage(result.uri)
             }
         }
+    }
+
+    private fun startCrop(imageUri: Uri?) {
+        CropImage.activity(imageUri)
+            .setGuidelines(CropImageView.Guidelines.ON)
+            .setAspectRatio(1, 1)
+            .start(this)
     }
 
     private fun uploadImage(it: Uri) {
