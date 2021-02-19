@@ -1,4 +1,4 @@
-package com.example.whatsappclone
+package com.example.whatsappclone.auth
 
 import android.app.ProgressDialog
 import android.content.Context
@@ -10,10 +10,11 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.example.whatsappclone.MainActivity
+import com.example.whatsappclone.R.*
 import com.example.whatsappclone.databinding.ActivityOtpBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -54,16 +55,15 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-
     private fun setSpannableString() {
-        val span = SpannableString(getString(R.string.waiting_text, phoneNumber))
+        val span = SpannableString(getString(string.waiting_text, phoneNumber))
         val clickSpan: ClickableSpan = object : ClickableSpan() {
             override fun updateDrawState(ds: TextPaint) {
                 ds.color = ds.linkColor // you can use custom color
-                ds.isUnderlineText = false // this remove the underline
+                ds.isUnderlineText = false
             }
 
-            override fun onClick(textView: View) { // handle click event
+            override fun onClick(textView: View) {
                 showLoginActivity()
             }
         }
@@ -80,7 +80,6 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
         outState.putString(PHONE_NUMBER, phoneNumber)
     }
 
-    // This method will send a code to a given phone number as an SMS
 
     private fun showTimer(milliesInFuture: Long) {
         binding.resendBtn.isEnabled = false
@@ -91,21 +90,24 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
                 binding.counterTv.isVisible = true
                 binding.counterTv.text = "Seconds remaining: " + millisUntilFinished / 1000
             }
+
             override fun onFinish() {
                 binding.resendBtn.isEnabled = true
                 binding.counterTv.isVisible = false
             }
         }.start()
     }
+
     override fun onDestroy() {
         super.onDestroy()
         if (mCounterDown != null) {
             mCounterDown!!.cancel()
         }
     }
+
     private fun initView() {
         phoneNumber = intent.getStringExtra(PHONE_NUMBER)
-        binding.verifyTv.text = getString(R.string.verify_number, phoneNumber)
+        binding.verifyTv.text = getString(string.verify_number, phoneNumber)
         setSpannableString()
         binding.verificationBtn.setOnClickListener(this)
         binding.resendBtn.setOnClickListener(this)
@@ -130,13 +132,15 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
 
                 if (e is FirebaseAuthInvalidCredentialsException) {
                     Snackbar.make(
-                        findViewById(android.R.id.content), "Invalid Phone Number.", Snackbar.LENGTH_SHORT
+                        findViewById(android.R.id.content),
+                        "Invalid Phone Number.",
+                        Snackbar.LENGTH_SHORT
                     ).show()
                 } else if (e is FirebaseTooManyRequestsException) {
                     Snackbar.make(
                         findViewById(android.R.id.content), "Quota exceeded.", Snackbar.LENGTH_SHORT
                     ).show()
-                }else{
+                } else {
                     notifyUserAndRetry("Your Phone Number might be wrong or connection error.Retry again!")
                 }
 
@@ -146,7 +150,7 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
                 verificationId: String,
                 token: PhoneAuthProvider.ForceResendingToken
             ) {
-                super.onCodeSent(verificationId,token)
+                super.onCodeSent(verificationId, token)
                 progressDialog.dismiss()
                 binding.counterTv.isVisible = false
                 mVerificationId = verificationId
@@ -159,12 +163,12 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v) {
             binding.verificationBtn -> {
-                var code = binding.sentcodeEt.text.toString()
+                val code = binding.sentcodeEt.text.toString()
                 if (code.isNotEmpty() && !mVerificationId.isNullOrEmpty()) {
                     progressDialog = createProgressDialog("Please wait...", false)
                     progressDialog.show()
                     val credential =
-                        PhoneAuthProvider.getCredential(mVerificationId!!, code.toString())
+                        PhoneAuthProvider.getCredential(mVerificationId!!, code)
                     signInWithPhoneAuthCredential(credential)
                 }
             }
@@ -176,20 +180,25 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
                     progressDialog = createProgressDialog("Sending a verification code", false)
                     progressDialog.show()
                 } else {
-//                    toast("Sorry, You Can't request new code now, Please wait ...")
+                    Snackbar.make(
+                        findViewById(android.R.id.content),
+                        "Sorry, You Can't request new code now, Please wait",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
             }
-
         }
     }
+
     private fun startPhoneNumberVerification(phoneNumber: String) {
-        val options=PhoneAuthOptions.newBuilder(auth).setPhoneNumber(phoneNumber)
-            .setTimeout(60L,TimeUnit.SECONDS)
+        val options = PhoneAuthOptions.newBuilder(auth).setPhoneNumber(phoneNumber)
+            .setTimeout(60L, TimeUnit.SECONDS)
             .setActivity(this)
             .setCallbacks(callbacks)
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
+
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
@@ -197,12 +206,11 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
                     if (::progressDialog.isInitialized) {
                         progressDialog.dismiss()
                     }
-                    showSignUpActivity()
-//                    if (task.result?.additionalUserInfo?.isNewUser == true) {
-//                        showSignUpActivity()
-//                    } else {
-//                        showHomeActivity()
-//                    }
+                    if (task.result?.additionalUserInfo?.isNewUser == true) {
+                        showSignUpActivity()
+                    } else {
+                        showHomeActivity()
+                    }
                 } else {
                     if (::progressDialog.isInitialized) {
                         progressDialog.dismiss()

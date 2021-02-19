@@ -1,17 +1,13 @@
-package com.example.whatsappclone
+package com.example.whatsappclone.auth
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.whatsappclone.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.credentials.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.security.AccessController.getContext
-import java.util.*
 
 
 const val CREDENTIAL_PICKER_REQUEST = 1
@@ -19,7 +15,7 @@ const val CREDENTIAL_PICKER_REQUEST = 1
 class LoginActivity : AppCompatActivity() {
     private lateinit var phoneNumber: String
     private lateinit var countryCode: String
-    lateinit var binding: ActivityLoginBinding
+    private lateinit var binding: ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -53,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
             val credentials: Credential? = data?.getParcelableExtra(Credential.EXTRA_KEY)
             binding.phoneNumberEt.setText(credentials?.id?.substring(3))
         } else if (requestCode == CREDENTIAL_PICKER_REQUEST && resultCode == CredentialsApi.ACTIVITY_RESULT_NO_HINTS_AVAILABLE) {
-            Log.i("TAG","Google Play Services Error")
+            Log.i("TAG", "Google Play Services Error")
         }
     }
 

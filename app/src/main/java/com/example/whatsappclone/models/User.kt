@@ -1,6 +1,4 @@
-package com.example.whatsappclone
-
-import com.google.firebase.firestore.FieldValue
+package com.example.whatsappclone.models
 
 data class User(
     val name: String,

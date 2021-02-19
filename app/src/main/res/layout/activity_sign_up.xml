@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".SignUpActivity">
+    tools:context=".auth.SignUpActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,26 +32,28 @@
         android:layout_height="120dp"
         android:layout_marginTop="20dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/defaultavatar"
         android:clickable="true"
         android:focusable="true"
         android:scaleType="centerCrop"
-        app:shapeAppearanceOverlay="@style/RoundedImageView"/>
+        android:src="@drawable/defaultavatar"
+        app:shapeAppearanceOverlay="@style/RoundedImageView" />
+
     <EditText
         android:id="@+id/nameEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
         android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
         android:hint="@string/type_your_name_here"
         android:imeActionLabel="Send"
         android:imeOptions="actionUnspecified"
         android:inputType="textPersonName"
         android:maxLines="1"
         android:singleLine="true"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/nextBtn"
         android:layout_width="wrap_content"
@@ -68,5 +70,5 @@
         android:textColor="#fff"
         android:textSize="18sp"
         android:textStyle="normal"
-        app:cornerRadius="5dp"/>
+        app:cornerRadius="5dp" />
 </LinearLayout>
