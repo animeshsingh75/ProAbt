@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="Verify Your Number"
+        android:text="@string/verify_your_number"
         android:textColor="#515151"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -34,7 +34,7 @@
         android:fontFamily="sans-serif-condensed"
         android:gravity="center"
         android:padding="15dp"
-        android:text="Please enter your mobile number.You will get a SMS including a verification code."
+        android:text="@string/please_enter_your_mobile_number_you_will_get_a_sms_including_a_verification_code"
         android:textSize="16sp" />
 
     <LinearLayout
@@ -87,7 +87,7 @@
         android:paddingTop="10dp"
         android:paddingEnd="20dp"
         android:paddingBottom="10dp"
-        android:text="next"
+        android:text="@string/next"
         android:textAllCaps="true"
         android:textColor="#fff"
         android:textSize="18sp"
