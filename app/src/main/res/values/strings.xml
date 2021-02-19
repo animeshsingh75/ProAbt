@@ -22,4 +22,7 @@
     <string name="verify_your_number">Verify Your Number</string>
     <string name="please_enter_your_mobile_number_you_will_get_a_sms_including_a_verification_code">Please enter your mobile number.You will get a SMS including a verification code.</string>
     <string name="next">next</string>
+    <string name="profile_info">Profile Info</string>
+    <string name="please_provide_your_name_and_a_profile_photo">Please provide your name and a profile photo</string>
+    <string name="type_your_name_here">Type your name here</string>
 </resources>

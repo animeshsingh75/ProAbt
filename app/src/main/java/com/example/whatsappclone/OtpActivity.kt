@@ -197,11 +197,12 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
                     if (::progressDialog.isInitialized) {
                         progressDialog.dismiss()
                     }
-                    if (task.result?.additionalUserInfo?.isNewUser == true) {
-                        showSignUpActivity()
-                    } else {
-                        showHomeActivity()
-                    }
+                    showSignUpActivity()
+//                    if (task.result?.additionalUserInfo?.isNewUser == true) {
+//                        showSignUpActivity()
+//                    } else {
+//                        showHomeActivity()
+//                    }
                 } else {
                     if (::progressDialog.isInitialized) {
                         progressDialog.dismiss()
@@ -242,9 +243,9 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showSignUpActivity() {
-//        val intent = Intent(this, SignUpActivity::class.java)
-//        startActivity(intent)
-//        finish()
+        val intent = Intent(this, SignUpActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun resendVerificationCode(

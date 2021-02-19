@@ -1,9 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context=".SignUpActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="@string/profile_info"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="@string/please_provide_your_name_and_a_profile_photo"
+        android:textSize="16sp" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/userImgView"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="20dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/defaultavatar"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/RoundedImageView"/>
+    <EditText
+        android:id="@+id/nameEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="30dp"
+        android:hint="@string/type_your_name_here"
+        android:imeActionLabel="Send"
+        android:imeOptions="actionUnspecified"
+        android:inputType="textPersonName"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="16sp"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/nextBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp"
+        android:enabled="false"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        android:text="@string/next"
+        android:textAllCaps="true"
+        android:textColor="#fff"
+        android:textSize="18sp"
+        android:textStyle="normal"
+        app:cornerRadius="5dp"/>
+</LinearLayout>
