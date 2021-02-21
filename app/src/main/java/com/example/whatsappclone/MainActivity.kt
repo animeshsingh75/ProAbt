@@ -2,6 +2,7 @@ package com.example.whatsappclone
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import com.example.whatsappclone.adapters.ScreenSliderAdapter
 import com.example.whatsappclone.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
@@ -22,5 +23,10 @@ class MainActivity : AppCompatActivity() {
                 1 -> tab.text = "PEOPLE"
             }
         }.attach()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu,menu)
+        return super.onCreateOptionsMenu(menu)
     }
 }

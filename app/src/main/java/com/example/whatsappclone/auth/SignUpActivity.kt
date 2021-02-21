@@ -21,12 +21,13 @@ import com.google.firebase.storage.UploadTask
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 
-class SignUpActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySignUpBinding
-    private lateinit var downloadUrl: String
-    private lateinit var thumbnailUrl: String
 
-    private val storage by lazy {
+class SignUpActivity : AppCompatActivity() {
+    lateinit var binding: ActivitySignUpBinding
+    lateinit var downloadUrl: String
+    lateinit var thumbnailUrl: String
+
+    val storage by lazy {
         FirebaseStorage.getInstance()
     }
     val auth by lazy {
@@ -52,11 +53,12 @@ class SignUpActivity : AppCompatActivity() {
                 Toast.makeText(this, "Image cannot by empty", Toast.LENGTH_LONG).show()
             } else {
                 val user = User(name, downloadUrl, thumbnailUrl, auth.uid!!)
-                database.collection("users").document(auth.uid!!).set(user).addOnSuccessListener {
-                    startActivity(Intent(this, MainActivity::class.java))
-                }.addOnFailureListener {
-                    binding.nextBtn.isEnabled = true
-                }
+                database.collection("users").document(auth.uid!!).set(user)
+                    .addOnSuccessListener {
+                        startActivity(Intent(this, MainActivity::class.java))
+                    }.addOnFailureListener {
+                        binding.nextBtn.isEnabled = true
+                    }
             }
         }
     }
@@ -132,7 +134,6 @@ class SignUpActivity : AppCompatActivity() {
                 downloadUrl = task.result.toString()
                 Log.i("URL", "downloadUrl: $downloadUrl")
                 getThumbnailUrl()
-
             }
         }.addOnFailureListener {
 

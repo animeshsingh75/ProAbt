@@ -28,6 +28,8 @@
         <activity android:name=".auth.SignUpActivity" />
         <activity android:name=".auth.OtpActivity" />
         <activity android:name=".auth.LoginActivity" />
+
+
         <activity android:name=".MainActivity" />
     </application>
 

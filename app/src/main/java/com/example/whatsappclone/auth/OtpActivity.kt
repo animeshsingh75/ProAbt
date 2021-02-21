@@ -206,6 +206,7 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
                     if (::progressDialog.isInitialized) {
                         progressDialog.dismiss()
                     }
+
                     if (task.result?.additionalUserInfo?.isNewUser == true) {
                         showSignUpActivity()
                     } else {
