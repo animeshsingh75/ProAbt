@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatsappClone">
+        <activity android:name=".ChatActivity"></activity>
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
@@ -28,8 +29,6 @@
         <activity android:name=".auth.SignUpActivity" />
         <activity android:name=".auth.OtpActivity" />
         <activity android:name=".auth.LoginActivity" />
-
-
         <activity android:name=".MainActivity" />
     </application>
 

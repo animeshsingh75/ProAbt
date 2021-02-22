@@ -1,5 +1,6 @@
 package com.example.whatsappclone.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.whatsappclone.R
+import com.example.whatsappclone.*
 import com.example.whatsappclone.adapters.EmptyViewHolder
 import com.example.whatsappclone.adapters.UserViewHolder
 import com.example.whatsappclone.models.User
@@ -102,14 +103,21 @@ class PeopleFragment : Fragment() {
             override fun onError(e: Exception) {
                 super.onError(e)
             }
+
             override fun onBindViewHolder(
                 holder: RecyclerView.ViewHolder,
                 position: Int,
                 model: User
             ) {
                 if (holder is UserViewHolder) {
-                    holder.bind(user = model)
-                }else{
+                    holder.bind(user = model) { name: String, photo: String, id: String ->
+                        val intent=Intent(requireContext(),ChatActivity::class.java)
+                        intent.putExtra(UID,id)
+                        intent.putExtra(NAME,name)
+                        intent.putExtra(IMAGE,photo)
+                        startActivity(intent)
+                    }
+                } else {
 
                 }
 

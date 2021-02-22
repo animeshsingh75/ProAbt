@@ -5,11 +5,12 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.whatsappclone.R
+import com.example.whatsappclone.models.User
 import com.google.android.material.imageview.ShapeableImageView
 import com.squareup.picasso.Picasso
 
 class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    fun bind(user: com.example.whatsappclone.models.User) = with(itemView) {
+    fun bind(user: User,onClick:(name:String,photo:String,id:String)->Unit) = with(itemView) {
         val countTv = itemView.findViewById<TextView>(R.id.countTv)
         val timeTv = itemView.findViewById<TextView>(R.id.timeTv)
         val titleTv = itemView.findViewById<TextView>(R.id.titleTv)
@@ -24,6 +25,9 @@ class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .placeholder(R.drawable.defaultavatar)
             .error(R.drawable.defaultavatar)
             .into(userImgView)
+        setOnClickListener {
+            onClick.invoke(user.name,user.thumbImage,user.uid)
+        }
     }
 
 }
