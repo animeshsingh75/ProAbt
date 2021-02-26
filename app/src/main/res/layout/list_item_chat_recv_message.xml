@@ -12,13 +12,11 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/messageCardView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:elevation="0dp"
         app:cardBackgroundColor="#f3f3f3"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearance="@style/CustomMediumShapeAppearance">
@@ -27,14 +25,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            app:alignItems="flex_start"
+            app:alignItems="flex_end"
             app:flexWrap="wrap"
-            app:justifyContent="flex_start">
+            app:justifyContent="flex_end">
 
             <TextView
                 android:id="@+id/content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:lineSpacingExtra="5dp"
                 android:textColor="#1c1d2a"
                 android:textSize="14sp"
                 tools:text="Hello World" />
@@ -49,5 +48,15 @@
                 tools:text="12:00AM" />
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.material.card.MaterialCardView>
-
+    <ImageView
+        android:contentDescription="@string/like_message"
+        android:id="@+id/highFiveImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/high_five"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/messageCardView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

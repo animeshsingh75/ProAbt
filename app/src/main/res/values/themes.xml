@@ -43,7 +43,6 @@
 
     <style name="SplashTheme" parent="Theme.WhatsappClone">
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">@color/purple_200</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowTranslucentNavigation">true</item>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.whatsappclone">
+    package="com.project.whatsappclone">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -13,23 +13,44 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatsappClone">
-        <activity android:name=".ChatActivity"></activity>
-        <activity
-            android:name=".SplashActivity"
-            android:theme="@style/SplashTheme">
+        <service
+            android:name="com.project.whatsappclone.service.MyFirebaseMessaging"
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </activity>
+        </service>
+
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".auth.SignUpActivity" />
-        <activity android:name=".auth.OtpActivity" />
-        <activity android:name=".auth.LoginActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name="com.project.whatsappclone.auth.SignUpActivity" />
+        <activity android:name="com.project.whatsappclone.auth.OtpActivity" />
+        <activity
+            android:name="com.project.whatsappclone.SplashActivity"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.project.whatsappclone.ChatActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.project.whatsappclone.MainActivity" />
+        </activity>
+        <activity android:name="com.project.whatsappclone.auth.LoginActivity" />
+        <activity android:name="com.project.whatsappclone.MainActivity">
+            <intent-filter>
+                <action android:name="MainActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_launcher_foreground" />
     </application>
 
 </manifest>

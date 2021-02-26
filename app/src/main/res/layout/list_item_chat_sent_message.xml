@@ -9,8 +9,18 @@
     android:paddingTop="4dp"
     android:paddingEnd="16dp"
     android:paddingBottom="4dp">
+    <ImageView
+        android:id="@+id/highFiveImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/like_message"
+        android:visibility="gone"
+        android:src="@drawable/ic_high_five_inverted"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/materialCardView" />
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="0dp"
