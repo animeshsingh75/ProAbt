@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.project.whatsappclone">
+    package="com.project.proabt">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatsappClone">
         <service
-            android:name="com.project.whatsappclone.service.MyFirebaseMessaging"
+            android:name="com.project.proabt.service.MyFirebaseMessaging"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -25,23 +25,23 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name="com.project.whatsappclone.auth.SignUpActivity" />
-        <activity android:name="com.project.whatsappclone.auth.OtpActivity" />
+        <activity android:name="com.project.proabt.auth.SignUpActivity" />
+        <activity android:name="com.project.proabt.auth.OtpActivity" />
         <activity
-            android:name="com.project.whatsappclone.SplashActivity"
+            android:name="com.project.proabt.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.project.whatsappclone.ChatActivity">
+        <activity android:name="com.project.proabt.ChatActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.project.whatsappclone.MainActivity" />
+                android:value="com.project.proabt.MainActivity" />
         </activity>
-        <activity android:name="com.project.whatsappclone.auth.LoginActivity" />
-        <activity android:name="com.project.whatsappclone.MainActivity">
+        <activity android:name="com.project.proabt.auth.LoginActivity" />
+        <activity android:name="com.project.proabt.MainActivity">
             <intent-filter>
                 <action android:name="MainActivity" />
                 <category android:name="android.intent.category.DEFAULT" />

@@ -58,6 +58,7 @@
             android:overScrollMode="ifContentScrolls"
             tools:itemCount="10"
             tools:listitem="@layout/list_item_chat_sent_message" />
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <RelativeLayout
@@ -69,8 +70,8 @@
         android:paddingTop="5dp"
         android:paddingEnd="5dp"
         android:paddingBottom="5dp">
-
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
@@ -80,7 +81,6 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <ImageView
                     android:id="@+id/smileBtn"
                     android:layout_width="26dp"
@@ -89,12 +89,11 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="10dp"
                     android:src="@drawable/ic_chat_icons_smile" />
-
                 <com.vanniktech.emoji.EmojiEditText
                     android:id="@+id/msgEdTv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    android:layout_marginStart="11dp"
                     android:layout_marginEnd="10dp"
                     android:layout_toEndOf="@+id/smileBtn"
                     android:background="@android:color/white"
@@ -110,6 +109,16 @@
                     android:singleLine="false"
                     android:textColorHint="#b6b6b6"
                     android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/attachment"
+                    android:layout_width="26dp"
+                    android:layout_height="42dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="16dp"
+                    android:rotation="-45"
+                    android:src="@drawable/ic_attachment" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -123,7 +132,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/chat_icon"/>
+            android:src="@drawable/chat_icon" />
     </RelativeLayout>
 
 </RelativeLayout>

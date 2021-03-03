@@ -15,7 +15,7 @@
         android:elevation="10dp"
         android:theme="@style/AppTheme.Toolbar"
         app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
-        app:title="Whatsapp" />
+        app:title="ProAbt" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"

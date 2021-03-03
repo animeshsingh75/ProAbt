@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#253d3f"
+    android:background="#253f3c"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:layout_gravity="center">
 
     <ImageView
-
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="325dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_splash_activity"/>
+        android:src="@drawable/ic_splash_activity" />
 </LinearLayout>
