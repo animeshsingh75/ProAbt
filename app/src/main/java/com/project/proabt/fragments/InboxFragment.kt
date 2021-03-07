@@ -10,13 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.project.proabt.ChatActivity
 import com.project.proabt.R
-import com.project.proabt.adapters.ChatViewHolder
 import com.project.proabt.models.Inbox
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
+import com.project.proabt.adapters.ChatViewHolder
+
 
 class InboxFragment : Fragment() {
 

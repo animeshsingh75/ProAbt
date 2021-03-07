@@ -1,4 +1,3 @@
-
 package com.project.proabt.adapters
 
 import android.view.LayoutInflater
@@ -8,12 +7,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import com.project.proabt.R
 import com.project.proabt.models.ChatEvent
 import com.project.proabt.models.DateHeader
 import com.project.proabt.models.Message
 import com.project.proabt.utils.formatAsTime
-import com.google.android.material.card.MaterialCardView
 
 class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrentUid: String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {

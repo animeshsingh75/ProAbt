@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.project.proabt.adapters.ChatAdapter
-import com.project.proabt.models.*
-import com.project.proabt.utils.KeyboardVisibilityUtil
-import com.project.proabt.utils.isSameDayAs
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.project.proabt.adapters.ChatAdapter
 import com.project.proabt.databinding.ActivityChatBinding
+import com.project.proabt.models.*
+import com.project.proabt.utils.KeyboardVisibilityUtil
+import com.project.proabt.utils.isSameDayAs
 import com.squareup.picasso.Picasso
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.EmojiPopup
@@ -32,6 +32,8 @@ class ChatActivity : AppCompatActivity() {
     private val friendId by lazy {
         intent.getStringExtra(UID)
     }
+    private var clicked = false
+    lateinit var msgMap: Message
     private val name by lazy {
         intent.getStringExtra(NAME)
     }
@@ -44,7 +46,7 @@ class ChatActivity : AppCompatActivity() {
     private val db by lazy {
         FirebaseDatabase.getInstance()
     }
-    private val getUser by lazy{
+    private val getUser by lazy {
         FirebaseFirestore.getInstance().document("users/$mCurrentUid")
     }
     private val messages = mutableListOf<ChatEvent>()
@@ -63,6 +65,9 @@ class ChatActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.setNavigationOnClickListener {
+            checkInitialMessage()
+        }
         FirebaseFirestore.getInstance().collection("users").document(mCurrentUid).get()
             .addOnSuccessListener {
                 currentUser = it.toObject(User::class.java)!!
@@ -77,9 +82,6 @@ class ChatActivity : AppCompatActivity() {
         val emojiPopup = EmojiPopup.Builder.fromRootView(binding.rootView).build(binding.msgEdTv)
         binding.smileBtn.setOnClickListener {
             emojiPopup.toggle()
-        }
-        binding.attachment.setOnClickListener {
-
         }
         binding.swipeToLoad.setOnRefreshListener {
             val workerScope = CoroutineScope(Dispatchers.Main)
@@ -98,6 +100,7 @@ class ChatActivity : AppCompatActivity() {
         binding.sendBtn.setOnClickListener {
             binding.msgEdTv.text?.let {
                 if (!it.isEmpty()) {
+                    clicked = true
                     sendMessage(it.toString())
                     it.clear()
                 }
@@ -107,6 +110,10 @@ class ChatActivity : AppCompatActivity() {
             updateHighFive(id, status)
         }
         markAsRead()
+    }
+
+    override fun onBackPressed() {
+        checkInitialMessage()
     }
 
     private fun markAsRead() {
@@ -157,7 +164,7 @@ class ChatActivity : AppCompatActivity() {
         }
         messages.add(msg)
         chatAdapter.notifyItemInserted(messages.size)
-        binding.msgRv.smoothScrollToPosition(messages.size+1)
+        binding.msgRv.smoothScrollToPosition(messages.size + 1)
     }
 
     private fun updateMessage(msg: Message) {
@@ -176,10 +183,10 @@ class ChatActivity : AppCompatActivity() {
         val id = getMessages(friendId!!).push().key
         checkNotNull(id) { "Cannot by null" }
         getUser.get().addOnSuccessListener {
-            val imageUrl=it.get("imageUrl") as String
-            val senderName=it.get("name") as String
-            val msgMap = Message(msg, mCurrentUid, id,imageUrl,senderName)
-            Log.wtf("msgMap",msgMap.imageUrl)
+            val imageUrl = it.get("imageUrl") as String
+            val senderName = it.get("name") as String
+            msgMap = Message(msg, mCurrentUid, id, imageUrl, senderName)
+            Log.wtf("msgMap", msgMap.imageUrl)
             getMessages(friendId!!).child(id).setValue(msgMap).addOnSuccessListener {
                 Log.i("CHATS", "Completed")
             }.addOnFailureListener {
@@ -223,7 +230,27 @@ class ChatActivity : AppCompatActivity() {
             })
         }
     }
-
+    private fun checkInitialMessage(){
+        val reference = db.getReference("chats").child(mCurrentUid).child(friendId!!).get()
+            .addOnSuccessListener {
+                val result = !(it.child("name").exists() || clicked)
+                Log.wtf("ErrorDB", "$result")
+                if (result) {
+                    val inboxMap = Inbox(
+                        "",
+                        friendId!!,
+                        name!!,
+                        image!!,
+                        count = 0
+                    )
+                    getInbox(mCurrentUid, friendId!!).setValue(inboxMap).addOnCompleteListener {
+                        startActivity(Intent(this, MainActivity::class.java))
+                    }
+                } else {
+                    startActivity(Intent(this, MainActivity::class.java))
+                }
+            }
+    }
     private fun getId(friendId: String): String {
         return if (friendId > mCurrentUid) {
             mCurrentUid + friendId

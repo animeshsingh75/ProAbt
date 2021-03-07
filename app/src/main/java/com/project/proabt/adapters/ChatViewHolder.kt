@@ -11,10 +11,8 @@ import com.project.proabt.models.Inbox
 import com.project.proabt.utils.formatAsListItem
 import com.squareup.picasso.Picasso
 
-
-
-class ChatViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
-    fun bind(item:Inbox,onClick:(name:String,photo:String,id:String)->Unit)=
+class ChatViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    fun bind(item: Inbox, onClick:(name:String, photo:String, id:String)->Unit)=
         with(itemView){
             val countTv=findViewById<TextView>(R.id.countTv)
             val timeTv=findViewById<TextView>(R.id.timeTv)
@@ -24,6 +22,9 @@ class ChatViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
             countTv.isVisible=item.count>0
             countTv.text=item.count.toString()
             timeTv.text=item.time.formatAsListItem(context)
+            if(item.msg==""){
+                timeTv.isVisible=false
+            }
             titleTv.text=item.name
             subtitleTv.text=item.msg
             Log.wtf("Image","Item Image from viewholder:${item.image}")
@@ -37,3 +38,4 @@ class ChatViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
             }
         }
 }
+
