@@ -57,7 +57,7 @@ class SignUpActivity : AppCompatActivity() {
             } else {
                 FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task->
                     if(!task.isSuccessful){
-                        Log.w("FCM","Fetching FCM Registrationtoken failed",task.exception)
+                        Log.d("FCM","Fetching FCM Registrationtoken failed",task.exception)
                         return@OnCompleteListener
                     }
                     token=task.result
@@ -66,7 +66,7 @@ class SignUpActivity : AppCompatActivity() {
                 val ref =
                     storage.reference.child("uploads/" + auth.uid.toString() + "_120x120").downloadUrl.addOnSuccessListener {
                         thumbnailUrl = it.toString()
-                        Log.i("URL", "thumbnailUrl: $thumbnailUrl")
+                        Log.d("URL", "thumbnailUrl: $thumbnailUrl")
                         val user = User(name, downloadUrl, thumbnailUrl, auth.uid!!,token)
                         database.collection("users").document(auth.uid!!).set(user)
                             .addOnSuccessListener {
@@ -148,7 +148,7 @@ class SignUpActivity : AppCompatActivity() {
             binding.nextBtn.isEnabled = true
             if (task.isSuccessful) {
                 downloadUrl = task.result.toString()
-                Log.i("URL", "downloadUrl: $downloadUrl")
+                Log.d("URL", "downloadUrl: $downloadUrl")
 //                getThumbnailUrl()
             }
         }.addOnFailureListener {

@@ -12,25 +12,39 @@ exports.sendNotification = functions.database.ref("/messages/{chatId}/{msgId}")
       const msg = snapshot.val().msg;
       const senderName=snapshot.val().senderName;
       const imageUrl=snapshot.val().imageUrl;
+      const type=snapshot.val().type;
       console.log(senderName, imageUrl);
       const userId = chatId.replace(senderId, "");
-      return admin.firestore().collection("users")
-          .doc(userId).get().then((doc) => {
-            const token=doc.data().deviceToken;
-            const payload={
-              notification: {
-                title: senderName+" sent you a message",
-                body: msg,
-                clickAction: "MainActivity",
-              },
-              //data: {
-                //UID: senderId,
-                //NAME: senderName,
-                //IMAGE: imageUrl,
-              //},
-            };
-            return admin.messaging().sendToDevice(token, payload)
-                .then((response)=>{
-                });
-          });
+      if (type =="TEXT") {
+        return admin.firestore().collection("users")
+            .doc(userId).get().then((doc) => {
+              const token=doc.data().deviceToken;
+              const payload={
+                notification: {
+                  title: senderName+" sent you a message",
+                  body: msg,
+                  clickAction: "MainActivity",
+                },
+              };
+              return admin.messaging().sendToDevice(token, payload)
+                  .then((response)=>{
+                  });
+            });
+      } else if (type == "IMAGE") {
+        return admin.firestore().collection("users")
+            .doc(userId).get().then((doc) => {
+              const token=doc.data().deviceToken;
+              const payload={
+                notification: {
+                  title: senderName+" sent you image",
+                  body: "Image",
+                  image: msg,
+                  clickAction: "MainActivity",
+                },
+              };
+              return admin.messaging().sendToDevice(token, payload)
+                  .then((response)=>{
+                  });
+            });
+      }
     });

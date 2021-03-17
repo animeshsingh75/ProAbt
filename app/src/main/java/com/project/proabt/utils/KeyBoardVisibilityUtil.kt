@@ -3,7 +3,7 @@ package com.project.proabt.utils
 import android.graphics.Rect
 import android.view.View
 
-class KeyboardVisibilityUtil(contentView: View, onKeyboardShown: (Boolean) -> Unit) {
+class  KeyboardVisibilityUtil(contentView: View, onKeyboardShown: (Boolean) -> Unit) {
 
     private var currentKeyboardState: Boolean = false
 

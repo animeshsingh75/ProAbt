@@ -60,7 +60,7 @@ class InboxFragment : Fragment() {
                 inbox: Inbox
             ) {
                 viewHolder.bind(inbox) { name: String, photo: String, id: String ->
-                    Log.wtf("Image", "Item Image:$photo")
+                    Log.d("Image", "Item Image:$photo")
                     startActivity(
                         ChatActivity.createChatActivity(
                             requireContext(),

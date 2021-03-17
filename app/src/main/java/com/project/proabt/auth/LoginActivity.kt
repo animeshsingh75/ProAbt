@@ -50,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
             val credentials: Credential? = data?.getParcelableExtra(Credential.EXTRA_KEY)
             binding.phoneNumberEt.setText(credentials?.id?.substring(3))
         } else if (requestCode == CREDENTIAL_PICKER_REQUEST && resultCode == CredentialsApi.ACTIVITY_RESULT_NO_HINTS_AVAILABLE) {
-            Log.i("TAG", "Google Play Services Error")
+            Log.d("TAG", "Google Play Services Error")
         }
     }
 

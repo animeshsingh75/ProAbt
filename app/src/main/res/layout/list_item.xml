@@ -61,7 +61,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center">
-
+            <ImageView
+                android:id="@+id/imageSubtitle"
+                android:visibility="gone"
+                android:src="@drawable/ic_image_24"
+                android:layout_width="24dp"
+                android:layout_height="24dp"/>
             <TextView
                 android:id="@+id/subtitleTv"
                 android:layout_width="0dp"

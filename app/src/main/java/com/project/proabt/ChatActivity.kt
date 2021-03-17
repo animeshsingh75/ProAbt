@@ -1,14 +1,21 @@
 package com.project.proabt
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.media.ExifInterface
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.project.proabt.adapters.ChatAdapter
 import com.project.proabt.databinding.ActivityChatBinding
 import com.project.proabt.models.*
@@ -22,17 +29,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.IOException
+
 
 const val UID = "uid"
 const val NAME = "name"
 const val IMAGE = "photo"
+const val SENTPHOTO = "sentphoto"
 
 class ChatActivity : AppCompatActivity() {
     lateinit var binding: ActivityChatBinding
     private val friendId by lazy {
         intent.getStringExtra(UID)
     }
-    private var clicked = false
     lateinit var msgMap: Message
     private val name by lazy {
         intent.getStringExtra(NAME)
@@ -49,6 +58,11 @@ class ChatActivity : AppCompatActivity() {
     private val getUser by lazy {
         FirebaseFirestore.getInstance().document("users/$mCurrentUid")
     }
+    val storage by lazy {
+        FirebaseStorage.getInstance()
+    }
+    private var backclicked: Boolean = false
+    private var attachmentclick: Boolean = false
     private val messages = mutableListOf<ChatEvent>()
     lateinit var chatAdapter: ChatAdapter
     lateinit var currentUser: User
@@ -78,10 +92,25 @@ class ChatActivity : AppCompatActivity() {
             adapter = chatAdapter
         }
         binding.nameTv.text = name
-        Picasso.get().load(image).into(binding.userImgView)
+        Picasso.get().load(image)
+            .into(binding.userImgView)
         val emojiPopup = EmojiPopup.Builder.fromRootView(binding.rootView).build(binding.msgEdTv)
         binding.smileBtn.setOnClickListener {
             emojiPopup.toggle()
+        }
+        binding.attachment.setOnClickListener {
+            binding.attachment.bringToFront()
+            Log.d("Clicked", "Clicked")
+            binding.layoutActionsContainer.isVisible = !attachmentclick
+            attachmentclick = !attachmentclick
+        }
+        binding.btnGalleryButton.setOnClickListener {
+            Log.d("Gallery", "Clicked")
+            pickImageFromGallery()
+        }
+        binding.btnGallery.setOnClickListener {
+            Log.d("Gallery", "Clicked")
+            pickImageFromGallery()
         }
         binding.swipeToLoad.setOnRefreshListener {
             val workerScope = CoroutineScope(Dispatchers.Main)
@@ -100,7 +129,7 @@ class ChatActivity : AppCompatActivity() {
         binding.sendBtn.setOnClickListener {
             binding.msgEdTv.text?.let {
                 if (!it.isEmpty()) {
-                    clicked = true
+                    backclicked = true
                     sendMessage(it.toString())
                     it.clear()
                 }
@@ -116,6 +145,36 @@ class ChatActivity : AppCompatActivity() {
         checkInitialMessage()
     }
 
+    private fun pickImageFromGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(
+            intent,
+            1000
+        )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == 1000) {
+            val imageUri = data?.data
+            try {
+                val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)
+            } catch (e: IOException) {
+                Log.e("IOException", e.toString())
+            }
+            Log.d("SENTPHOTO", imageUri.toString())
+            val picturePath = getPath(this, imageUri)
+            Log.d("Picture Path", picturePath!!)
+            val intent = Intent(this, ReviewImageActivity::class.java)
+            intent.putExtra("PicturePath", picturePath)
+            intent.putExtra(UID, friendId)
+            intent.putExtra(NAME, name)
+            intent.putExtra(IMAGE, image)
+            intent.putExtra(SENTPHOTO, imageUri.toString())
+            startActivity(intent)
+        }
+    }
     private fun markAsRead() {
         getInbox(mCurrentUid, friendId!!).child("count").setValue(0)
     }
@@ -185,12 +244,12 @@ class ChatActivity : AppCompatActivity() {
         getUser.get().addOnSuccessListener {
             val imageUrl = it.get("imageUrl") as String
             val senderName = it.get("name") as String
-            msgMap = Message(msg, mCurrentUid, id, imageUrl, senderName)
-            Log.wtf("msgMap", msgMap.imageUrl)
+            msgMap = Message(msg, mCurrentUid, id, imageUrl, senderName, "TEXT")
+            Log.d("msgMap", msgMap.imageUrl)
             getMessages(friendId!!).child(id).setValue(msgMap).addOnSuccessListener {
-                Log.i("CHATS", "Completed")
+                Log.d("CHATS", "Completed")
             }.addOnFailureListener {
-                Log.i("CHATS", it.localizedMessage)
+                Log.d("CHATS", it.localizedMessage)
             }
             updateLastMessage(msgMap)
         }
@@ -230,11 +289,12 @@ class ChatActivity : AppCompatActivity() {
             })
         }
     }
-    private fun checkInitialMessage(){
+
+    private fun checkInitialMessage() {
         val reference = db.getReference("chats").child(mCurrentUid).child(friendId!!).get()
             .addOnSuccessListener {
-                val result = !(it.child("name").exists() || clicked)
-                Log.wtf("ErrorDB", "$result")
+                val result = !(it.child("name").exists() || backclicked)
+                Log.d("ErrorDB", "$result")
                 if (result) {
                     val inboxMap = Inbox(
                         "",
@@ -251,6 +311,23 @@ class ChatActivity : AppCompatActivity() {
                 }
             }
     }
+    fun getPath(context: Context, uri: Uri?): String? {
+        var result: String? = null
+        val proj = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor: Cursor? = context.contentResolver.query(uri!!, proj, null, null, null)
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                val column_index: Int = cursor.getColumnIndexOrThrow(proj[0])
+                result = cursor.getString(column_index)
+            }
+            cursor.close()
+        }
+        if (result == null) {
+            result = "Not found"
+        }
+        return result
+    }
+
     private fun getId(friendId: String): String {
         return if (friendId > mCurrentUid) {
             mCurrentUid + friendId

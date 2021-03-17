@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootView"
+    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ChatActivity">
@@ -60,183 +61,209 @@
             tools:listitem="@layout/list_item_chat_sent_message" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/layout_actions"
+    <RelativeLayout
+        android:id="@+id/layout_actions_container"
+        android:gravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="70dp"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="5dp">
-
-        <LinearLayout
+        android:layout_above="@+id/inputBox"
+        android:visibility="gone"
+        android:focusableInTouchMode="true"
+        android:layout_height="match_parent">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layout_actions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="15dp">
+            android:layout_gravity="bottom"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="5dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="15dp">
 
                 <LinearLayout
-                    android:id="@+id/btn_doc"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:adjustViewBounds="true"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/google_docs"
-                        app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/btn_doc"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Document" />
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/btn_doc_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:adjustViewBounds="true"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/google_docs"
+                            app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Document" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btn_camera_x"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/btn_camera_x_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:adjustViewBounds="true"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/camer_button"
+                            app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Camera" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btn_gallery"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/btn_gallery_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:adjustViewBounds="true"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/gallery_button"
+                            app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gallery" />
+
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/btn_camera_x"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:adjustViewBounds="true"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/camer_button"
-                        app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/btn_audio"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Camera" />
-                </LinearLayout>
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/btn_gallery"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/btn_audio_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:adjustViewBounds="true"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/apps_ds_audio"
+                            app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:adjustViewBounds="true"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/gallery_button"
-                        app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Audio" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/empty1"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Gallery" />
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:adjustViewBounds="true"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/empty2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:adjustViewBounds="true"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/RoundedImageViewSmall"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="" />
+
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:orientation="horizontal">
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
 
-                <LinearLayout
-                    android:id="@+id/btn_audio"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:adjustViewBounds="true"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/apps_ds_audio"
-                        app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Audio" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:adjustViewBounds="true"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:scaleType="centerCrop"
-                        app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
     <RelativeLayout
         android:id="@+id/inputBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:paddingStart="10dp"
         android:paddingTop="5dp"
         android:paddingEnd="5dp"
         android:paddingBottom="5dp">
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView"
             android:layout_width="match_parent"
@@ -248,6 +275,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <ImageView
                     android:id="@+id/smileBtn"
                     android:layout_width="26dp"
@@ -256,6 +284,7 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="10dp"
                     android:src="@drawable/ic_chat_icons_smile" />
+
                 <com.vanniktech.emoji.EmojiEditText
                     android:id="@+id/msgEdTv"
                     android:layout_width="match_parent"
@@ -285,6 +314,8 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginEnd="16dp"
                     android:rotation="-45"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:src="@drawable/ic_attachment" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -302,4 +333,4 @@
             android:src="@drawable/chat_icon" />
     </RelativeLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>
