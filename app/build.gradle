@@ -74,6 +74,7 @@ dependencies {
     implementation "androidx.paging:paging-runtime:2.1.2"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'com.vanniktech:emoji-google:0.7.0'
+    implementation 'com.github.barteksc:pdfium-android:1.4.0'
 
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.android.gms:play-services-identity:17.0.0'

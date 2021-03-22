@@ -64,7 +64,7 @@ class SignUpActivity : AppCompatActivity() {
                     MyFirebaseMessaging.sendRegistrationToken(token)
                 })
                 val ref =
-                    storage.reference.child("uploads/" + auth.uid.toString() + "_120x120").downloadUrl.addOnSuccessListener {
+                    storage.reference.child("profile_pics/" + auth.uid.toString() + "_120x120").downloadUrl.addOnSuccessListener {
                         thumbnailUrl = it.toString()
                         Log.d("URL", "thumbnailUrl: $thumbnailUrl")
                         val user = User(name, downloadUrl, thumbnailUrl, auth.uid!!,token)
@@ -135,7 +135,7 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun uploadImage(it: Uri) {
         binding.nextBtn.isEnabled = false
-        val ref = storage.reference.child("uploads/" + auth.uid.toString())
+        val ref = storage.reference.child("profile_pics/" + auth.uid.toString())
         val uploadTask = ref.putFile(it)
         uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
             if (!task.isSuccessful) {

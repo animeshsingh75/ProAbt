@@ -18,15 +18,12 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
-import com.project.proabt.databinding.ActivityReviewImageBinding
 import com.project.proabt.models.Inbox
 import com.project.proabt.models.Message
 import com.project.proabt.models.User
-import com.squareup.picasso.Picasso
-import java.io.IOException
 
 
-class ReviewImageActivity : AppCompatActivity() {
+class ReviewDocActivity : AppCompatActivity() {
     private val friendId by lazy {
         intent.getStringExtra(UID)
     }
@@ -36,13 +33,9 @@ class ReviewImageActivity : AppCompatActivity() {
     private val image by lazy {
         intent.getStringExtra(IMAGE)
     }
-    private val sentphoto by lazy {
-        Uri.parse(intent.getStringExtra("SENTPHOTO"))
+    private val sentdoc by lazy {
+        Uri.parse(intent.getStringExtra("SENTDOC"))
     }
-    val picturePath by lazy{
-        intent.getStringExtra("PicturePath")
-    }
-
     val storage by lazy {
         FirebaseStorage.getInstance()
     }
@@ -59,50 +52,23 @@ class ReviewImageActivity : AppCompatActivity() {
         FirebaseAuth.getInstance().uid!!
     }
     private lateinit var progressDialog: ProgressDialog
-    var angle:Float?=0F
     lateinit var msgMap: Message
-    lateinit var binding: ActivityReviewImageBinding
     lateinit var downloadUrl: String
     lateinit var currentUser: User
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityReviewImageBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.btnBack.setOnClickListener {
-            val intent = Intent(this, ChatActivity::class.java)
-            intent.putExtra(UID, friendId)
-            intent.putExtra(NAME, name)
-            intent.putExtra(IMAGE, image)
-            startActivity(intent)
-        }
+        Log.d("PDFURIfrom", sentdoc.toString())
+        progressDialog = createProgressDialog("Sending a photo.Please wait", false)
+        progressDialog.show()
         FirebaseFirestore.getInstance().collection("users").document(mCurrentUid).get()
             .addOnSuccessListener {
                 currentUser = it.toObject(User::class.java)!!
             }
-        binding.btnSend.setOnClickListener {
-            Log.d("ClickedFl", "Clicked")
-            progressDialog = createProgressDialog("Sending a photo. Please wait", false)
-            progressDialog.show()
-            uploadImage(sentphoto)
-        }
-        angle=getOrientation(sentphoto).toFloat()
-        Log.d("Rotation",angle.toString())
-        binding.nameTv.text=name
-        Picasso.get()
-            .load(image)
-            .placeholder(R.drawable.defaultavatar)
-            .error(R.drawable.defaultavatar)
-            .into(binding.userImgView)
-        Picasso.get()
-            .load(sentphoto)
-            .rotate(angle!!)
-            .placeholder(R.drawable.defaultavatar)
-            .error(R.drawable.defaultavatar)
-            .into(binding.sentImage)
+        uploadDoc(sentdoc)
     }
 
-    private fun uploadImage(it: Uri) {
-        val ref = storage.reference.child("uploads/images/" + System.currentTimeMillis())
+    private fun uploadDoc(it: Uri) {
+        val ref = storage.reference.child("uploads/doc/" + System.currentTimeMillis())
         val uploadTask = ref.putFile(it)
         uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
             if (!task.isSuccessful) {
@@ -121,14 +87,15 @@ class ReviewImageActivity : AppCompatActivity() {
 
         }
     }
+
     private fun sendMessage(msgUrl: String) {
         val id = getMessages(friendId!!).push().key
         checkNotNull(id) { "Cannot by null" }
         getUser.get().addOnSuccessListener {
             val imageUrl = it.get("imageUrl") as String
             val senderName = it.get("name") as String
-            msgMap = Message(msgUrl, mCurrentUid, id, imageUrl, senderName, "IMAGE",angle = angle!!)
-            Log.d("msgMap", msgMap.imageUrl)
+            msgMap =
+                Message(msgUrl, mCurrentUid, id, imageUrl, senderName, "DOC",)
             getMessages(friendId!!).child(id).setValue(msgMap).addOnSuccessListener {
                 Log.d("CHATS", "Completed")
             }.addOnFailureListener {
@@ -145,7 +112,7 @@ class ReviewImageActivity : AppCompatActivity() {
             name!!,
             image!!,
             count = 0,
-            type = "IMAGE"
+            type = "DOC"
         )
         getInbox(mCurrentUid, friendId!!).setValue(inboxMap).addOnSuccessListener {
             getInbox(friendId!!, mCurrentUid).addListenerForSingleValueEvent(object :
@@ -164,7 +131,7 @@ class ReviewImageActivity : AppCompatActivity() {
                         }
                     }
                     getInbox(friendId!!, mCurrentUid).setValue(inboxMap)
-                    val intent = Intent(this@ReviewImageActivity, ChatActivity::class.java)
+                    val intent = Intent(this@ReviewDocActivity, ChatActivity::class.java)
                     intent.putExtra(UID, friendId)
                     intent.putExtra(NAME, name)
                     intent.putExtra(IMAGE, image)
@@ -200,19 +167,4 @@ class ReviewImageActivity : AppCompatActivity() {
         db.reference.child("chats/$toUser/$fromUser")
 
     private fun getMessages(friendId: String) = db.reference.child("messages/${getId(friendId)}")
-    private val ROTATION_DEGREES = 90
-    @Throws(IOException::class)
-    fun getOrientation(photoUri: Uri): Int {
-        val exif = ExifInterface(picturePath!!)
-        var orientation: Int = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1)
-        when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> orientation = ROTATION_DEGREES
-            ExifInterface.ORIENTATION_ROTATE_180 -> orientation = ROTATION_DEGREES * 2
-            ExifInterface.ORIENTATION_ROTATE_270 -> orientation = ROTATION_DEGREES * 3
-            else ->
-                orientation = 0
-        }
-        return orientation
-    }
 }
-

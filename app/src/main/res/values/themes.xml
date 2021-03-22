@@ -40,6 +40,25 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">60dp</item>
     </style>
+    <style name="RoundedChatImageViewRecv">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">22dp</item>
+        <item name="cornerSizeBottomLeft">8dp</item>
+        <item name="cornerSizeBottomRight">22dp</item>
+        <item name="cornerSizeTopRight">22dp</item>
+    </style>
+    <style name="RoundedChatImageViewSent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">22dp</item>
+        <item name="cornerSizeBottomLeft">22dp</item>
+        <item name="cornerSizeBottomRight">8dp</item>
+        <item name="cornerSizeTopRight">22dp</item>
+    </style>
+    <style name="RoundedChatPdfViewSent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">22dp</item>
+        <item name="cornerSizeTopRight">22dp</item>
+    </style>
 
     <style name="SplashTheme" parent="Theme.WhatsappClone">
         <item name="android:windowFullscreen">true</item>

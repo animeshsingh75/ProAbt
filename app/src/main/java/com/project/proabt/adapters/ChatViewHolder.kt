@@ -1,14 +1,9 @@
 package com.project.proabt.adapters
 
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.style.ImageSpan
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.project.proabt.R
@@ -26,6 +21,7 @@ class ChatViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
             val subtitleTv=findViewById<TextView>(R.id.subtitleTv)
             val userImgView=findViewById<ImageView>(R.id.userImgView1)
             val imageSubtitle=findViewById<ImageView>(R.id.imageSubtitle)
+            val pdfSubtitle=findViewById<ImageView>(R.id.pdfSubtitle)
             countTv.isVisible=item.count>0
             countTv.text=item.count.toString()
             timeTv.text=item.time.formatAsListItem(context)
@@ -35,6 +31,9 @@ class ChatViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
             if(item.type=="IMAGE"){
                 imageSubtitle.isVisible=true
                 subtitleTv.text="Image"
+            }else if(item.type=="DOC"){
+                imageSubtitle.isVisible=true
+                subtitleTv.text="PDF"
             }
             else{
                 subtitleTv.text=item.msg

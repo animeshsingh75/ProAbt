@@ -46,5 +46,20 @@ exports.sendNotification = functions.database.ref("/messages/{chatId}/{msgId}")
                   .then((response)=>{
                   });
             });
+      } else if (type == "DOC") {
+        return admin.firestore().collection("users")
+            .doc(userId).get().then((doc) => {
+              const token=doc.data().deviceToken;
+              const payload={
+                notification: {
+                  title: senderName+" sent you document",
+                  body: "PDF",
+                  clickAction: "MainActivity",
+                },
+              };
+              return admin.messaging().sendToDevice(token, payload)
+                  .then((response)=>{
+                  });
+            });
       }
     });

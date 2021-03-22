@@ -63,10 +63,10 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <RelativeLayout
         android:id="@+id/layout_actions_container"
+        android:visibility="gone"
         android:gravity="bottom"
         android:layout_width="match_parent"
         android:layout_above="@+id/inputBox"
-        android:visibility="gone"
         android:focusableInTouchMode="true"
         android:layout_height="match_parent">
         <androidx.cardview.widget.CardView
@@ -106,7 +106,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/google_docs"
+                            android:src="@drawable/ic_pdf_image"
                             app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
 
                         <TextView
@@ -290,7 +290,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="11dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="45dp"
                     android:layout_toEndOf="@+id/smileBtn"
                     android:background="@android:color/white"
                     android:gravity="top|start"
@@ -310,6 +310,7 @@
                     android:id="@+id/attachment"
                     android:layout_width="26dp"
                     android:layout_height="42dp"
+                    android:layout_toStartOf="@+id/msgEdTv"
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="6dp"
                     android:layout_marginEnd="16dp"

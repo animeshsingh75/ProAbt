@@ -78,14 +78,14 @@ class MyFirebaseMessaging : FirebaseMessagingService() {
                 )
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)
-
+                .setColor(Color.argb(1,1,128,205))
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val channel = NotificationChannel(
                     channelId,
                     "ProAbt",
-                    NotificationManager.IMPORTANCE_HIGH
+                    NotificationManager.IMPORTANCE_DEFAULT
                 )
                 notificationManager.createNotificationChannel(channel)
             }
@@ -107,7 +107,7 @@ class MyFirebaseMessaging : FirebaseMessagingService() {
                 val channel = NotificationChannel(
                     channelId,
                     "ProAbt",
-                    NotificationManager.IMPORTANCE_HIGH
+                    NotificationManager.IMPORTANCE_DEFAULT
                 )
                 notificationManager.createNotificationChannel(channel)
             }

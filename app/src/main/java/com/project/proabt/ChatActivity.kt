@@ -1,21 +1,30 @@
 package com.project.proabt
 
+import android.Manifest
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
-import android.media.ExifInterface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.OpenableColumns
+import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import com.project.proabt.adapters.ChatAdapter
 import com.project.proabt.databinding.ActivityChatBinding
 import com.project.proabt.models.*
@@ -29,13 +38,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.io.IOException
 
 
 const val UID = "uid"
 const val NAME = "name"
 const val IMAGE = "photo"
-const val SENTPHOTO = "sentphoto"
 
 class ChatActivity : AppCompatActivity() {
     lateinit var binding: ActivityChatBinding
@@ -63,6 +70,8 @@ class ChatActivity : AppCompatActivity() {
     }
     private var backclicked: Boolean = false
     private var attachmentclick: Boolean = false
+    private lateinit var progressDialog: ProgressDialog
+    lateinit var downloadUrl: String
     private val messages = mutableListOf<ChatEvent>()
     lateinit var chatAdapter: ChatAdapter
     lateinit var currentUser: User
@@ -105,12 +114,16 @@ class ChatActivity : AppCompatActivity() {
             attachmentclick = !attachmentclick
         }
         binding.btnGalleryButton.setOnClickListener {
-            Log.d("Gallery", "Clicked")
             pickImageFromGallery()
         }
         binding.btnGallery.setOnClickListener {
-            Log.d("Gallery", "Clicked")
             pickImageFromGallery()
+        }
+        binding.btnDocButton.setOnClickListener {
+            pickDocument()
+        }
+        binding.btnDoc.setOnClickListener {
+            pickDocument()
         }
         binding.swipeToLoad.setOnRefreshListener {
             val workerScope = CoroutineScope(Dispatchers.Main)
@@ -130,7 +143,7 @@ class ChatActivity : AppCompatActivity() {
             binding.msgEdTv.text?.let {
                 if (!it.isEmpty()) {
                     backclicked = true
-                    sendMessage(it.toString())
+                    sendMessage(it.toString(), "TEXT")
                     it.clear()
                 }
             }
@@ -154,15 +167,30 @@ class ChatActivity : AppCompatActivity() {
         )
     }
 
+    private fun pickDocument() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            val intent = Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.parse("package:$packageName")
+            )
+            startActivity(intent)
+            return
+        }
+        val intent = Intent()
+        intent.type = "application/pdf"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1001)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == 1000) {
             val imageUri = data?.data
-            try {
-                val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)
-            } catch (e: IOException) {
-                Log.e("IOException", e.toString())
-            }
             Log.d("SENTPHOTO", imageUri.toString())
             val picturePath = getPath(this, imageUri)
             Log.d("Picture Path", picturePath!!)
@@ -171,8 +199,40 @@ class ChatActivity : AppCompatActivity() {
             intent.putExtra(UID, friendId)
             intent.putExtra(NAME, name)
             intent.putExtra(IMAGE, image)
-            intent.putExtra(SENTPHOTO, imageUri.toString())
+            intent.putExtra("SENTPHOTO", imageUri.toString())
             startActivity(intent)
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == 1001) {
+            val pdfuri = data?.data
+            progressDialog = createProgressDialog("Sending a PDF. Please wait", false)
+            progressDialog.show()
+            Log.d("PDFURI", "Progress Dialog")
+            Log.d("PDFURI", pdfuri.toString())
+            val name=getFileName(pdfuri!!)
+            Log.d("PDFURI",name)
+            uploadDoc(pdfuri,name)
+        }
+    }
+
+
+    private fun uploadDoc(it: Uri,name:String) {
+        val ref = storage.reference.child("uploads/doc/" + System.currentTimeMillis())
+        val uploadTask = ref.putFile(it)
+        uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            return@Continuation ref.downloadUrl
+        }).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                downloadUrl = task.result.toString()
+                sendMessage(downloadUrl, "DOC",name)
+
+            }
+        }.addOnFailureListener {
+
         }
     }
     private fun markAsRead() {
@@ -192,7 +252,10 @@ class ChatActivity : AppCompatActivity() {
                     addMessage(msg, false)
                 }
 
-                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                override fun onChildChanged(
+                    snapshot: DataSnapshot,
+                    previousChildName: String?
+                ) {
                     val msg = snapshot.getValue(Message::class.java)!!
                     addMessage(msg, true)
                 }
@@ -238,31 +301,35 @@ class ChatActivity : AppCompatActivity() {
         chatAdapter.notifyItemChanged(position)
     }
 
-    private fun sendMessage(msg: String) {
+    private fun sendMessage(msg: String, type: String,fileName:String="") {
         val id = getMessages(friendId!!).push().key
         checkNotNull(id) { "Cannot by null" }
         getUser.get().addOnSuccessListener {
             val imageUrl = it.get("imageUrl") as String
             val senderName = it.get("name") as String
-            msgMap = Message(msg, mCurrentUid, id, imageUrl, senderName, "TEXT")
+            msgMap = Message(msg, mCurrentUid, id, imageUrl, senderName, type)
+            if(type=="DOC"){
+                msgMap = Message(msg, mCurrentUid, id, imageUrl, senderName, type,fileName = fileName)
+            }
             Log.d("msgMap", msgMap.imageUrl)
             getMessages(friendId!!).child(id).setValue(msgMap).addOnSuccessListener {
                 Log.d("CHATS", "Completed")
             }.addOnFailureListener {
                 Log.d("CHATS", it.localizedMessage)
             }
-            updateLastMessage(msgMap)
+            updateLastMessage(msgMap, type)
         }
 
     }
 
-    private fun updateLastMessage(message: Message) {
+    private fun updateLastMessage(message: Message, type: String) {
         val inboxMap = Inbox(
             message.msg,
             friendId!!,
             name!!,
             image!!,
-            count = 0
+            count = 0,
+            type = message.type
         )
         getInbox(mCurrentUid, friendId!!).setValue(inboxMap).addOnSuccessListener {
             getInbox(friendId!!, mCurrentUid).addListenerForSingleValueEvent(object :
@@ -281,6 +348,10 @@ class ChatActivity : AppCompatActivity() {
                         }
                     }
                     getInbox(friendId!!, mCurrentUid).setValue(inboxMap)
+                    if (type != "TEXT") {
+                        if (::progressDialog.isInitialized)
+                            progressDialog.dismiss()
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -311,6 +382,7 @@ class ChatActivity : AppCompatActivity() {
                 }
             }
     }
+
     fun getPath(context: Context, uri: Uri?): String? {
         var result: String? = null
         val proj = arrayOf(MediaStore.Images.Media.DATA)
@@ -327,7 +399,27 @@ class ChatActivity : AppCompatActivity() {
         }
         return result
     }
-
+    fun getFileName(uri: Uri): String{
+        var result: String? = null
+        if (uri.scheme == "content") {
+            val cursor = contentResolver.query(uri, null, null, null, null)
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                }
+            } finally {
+                cursor!!.close()
+            }
+        }
+        if (result == null) {
+            result = uri.path
+            val cut = result!!.lastIndexOf('/')
+            if (cut != -1) {
+                result = result.substring(cut + 1)
+            }
+        }
+        return result
+    }
     private fun getId(friendId: String): String {
         return if (friendId > mCurrentUid) {
             mCurrentUid + friendId
@@ -350,12 +442,27 @@ class ChatActivity : AppCompatActivity() {
             .removeOnGlobalLayoutListener(keyboardVisibilityHelper.visibilityListener)
     }
 
-    private fun getMessages(friendId: String) = db.reference.child("messages/${getId(friendId)}")
+    fun Context.createProgressDialog(message: String, isCancelable: Boolean): ProgressDialog {
+        return ProgressDialog(this).apply {
+            setCancelable(isCancelable)
+            setCanceledOnTouchOutside(false)
+            setMessage(message)
+        }
+    }
+
+    private fun getMessages(friendId: String) =
+        db.reference.child("messages/${getId(friendId)}")
+
     private fun getInbox(toUser: String, fromUser: String) =
         db.reference.child("chats/$toUser/$fromUser")
 
     companion object {
-        fun createChatActivity(context: Context, id: String, name: String, image: String): Intent {
+        fun createChatActivity(
+            context: Context,
+            id: String,
+            name: String,
+            image: String
+        ): Intent {
             val intent = Intent(context, ChatActivity::class.java)
             intent.putExtra(UID, id)
             intent.putExtra(NAME, name)

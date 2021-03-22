@@ -21,8 +21,8 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView"
-        android:layout_width="300dp"
-        android:layout_height="315dp"
+        android:layout_width="260dp"
+        android:layout_height="165dp"
         android:elevation="0dp"
         app:cardBackgroundColor="@color/purple_500"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -40,29 +40,65 @@
             app:flexWrap="wrap"
             app:justifyContent="flex_end">
 
-            <FrameLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/content"
-                    android:layout_width="275dp"
-                    android:layout_height="275dp"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:layout_width="250dp"
+                    android:layout_height="90dp"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_splash_activity"
-                    app:shapeAppearanceOverlay="@style/RoundedChatImageViewSent" />
+                    app:shapeAppearanceOverlay="@style/RoundedChatPdfViewSent" />
+
+                <RelativeLayout
+                    android:id="@+id/content_container"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/content"
+                    android:layout_marginTop="-1dp"
+                    android:background="@color/notification_default"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/google_docs"
+                        android:layout_width="30dp"
+                        android:layout_height="20dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/ic_pdf_image" />
+
+                    <TextView
+                        android:id="@+id/namePdf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:maxWidth="170dp"
+                        android:layout_toEndOf="@+id/google_docs"
+                        android:gravity="center"
+                        tools:text="PDF1" />
+
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="227dp"
-                    android:layout_marginTop="275dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+
                     android:textColor="#A6ffffff"
                     android:textSize="12sp"
                     tools:text="12:00AM" />
-            </FrameLayout>
+            </RelativeLayout>
 
 
         </com.google.android.flexbox.FlexboxLayout>

@@ -6,14 +6,16 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <application android:requestLegacyExternalStorage="true"
+    <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatsappClone">
-        <activity android:name=".ReviewImageActivity"></activity>
+        <activity android:name=".ViewImageActivity"></activity>
+        <activity android:name=".ReviewImageActivity" />
 
         <service
             android:name=".service.MyFirebaseMessaging"
@@ -55,8 +57,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_stat_name" />
-        <meta-data android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/notification_default"/>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/notification_default" />
     </application>
 
 </manifest>

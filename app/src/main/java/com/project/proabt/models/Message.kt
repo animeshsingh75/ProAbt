@@ -16,11 +16,12 @@ data class Message(
     val senderName:String,
     val type: String,
     val angle:Float=0F,
+    val fileName:String="",
     val status: Int = 1,
     val liked: Boolean = false,
     override val sentAt: Date = Date()
 ) : ChatEvent {
-    constructor() : this("", "", "", "","","", 0F,1, false,Date())
+    constructor() : this("", "", "", "","","", 0F,"",1, false,Date())
 }
 
 data class DateHeader(
