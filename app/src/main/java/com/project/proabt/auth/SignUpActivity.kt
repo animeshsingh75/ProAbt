@@ -9,9 +9,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.project.proabt.MainActivity
-import com.project.proabt.models.User
-import com.project.proabt.service.MyFirebaseMessaging
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -20,7 +17,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.project.proabt.MainActivity
 import com.project.proabt.databinding.ActivitySignUpBinding
+import com.project.proabt.models.User
+import com.project.proabt.service.MyFirebaseMessaging
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 
@@ -130,6 +130,7 @@ class SignUpActivity : AppCompatActivity() {
         CropImage.activity(imageUri)
             .setGuidelines(CropImageView.Guidelines.ON)
             .setAspectRatio(1, 1)
+            .setCropShape(CropImageView.CropShape.OVAL)
             .start(this)
     }
 

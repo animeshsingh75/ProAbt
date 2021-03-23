@@ -1,9 +1,8 @@
-package com.project.proabt
+package com.project.proabt.attachment_types
 
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +17,10 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.project.proabt.ChatActivity
+import com.project.proabt.IMAGE
+import com.project.proabt.NAME
+import com.project.proabt.UID
 import com.project.proabt.models.Inbox
 import com.project.proabt.models.Message
 import com.project.proabt.models.User

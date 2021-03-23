@@ -12,7 +12,11 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
-import com.project.proabt.*
+import com.project.proabt.IMAGE
+import com.project.proabt.NAME
+import com.project.proabt.R
+import com.project.proabt.UID
+import com.project.proabt.attachment_types.ViewImageActivity
 import com.project.proabt.models.ChatEvent
 import com.project.proabt.models.DateHeader
 import com.project.proabt.models.Message
@@ -159,7 +163,7 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
                         content.setOnClickListener { v ->
                             Log.d("Clicked", "Clicked")
                             val intent = Intent(v.context, ViewImageActivity::class.java)
-                            intent.putExtra(UID, item.senderId)
+                            intent.putExtra("angle",item.angle)
                             intent.putExtra(NAME, item.senderName)
                             intent.putExtra(IMAGE, item.imageUrl)
                             intent.putExtra("MSG", item.msg)
@@ -167,7 +171,6 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
                         }
                         Picasso.get()
                             .load(item.msg)
-                            .rotate(angle)
                             .placeholder(R.drawable.defaultavatar)
                             .error(R.drawable.defaultavatar)
                             .into(content)
@@ -200,7 +203,6 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
                         }
                         Picasso.get()
                             .load(item.msg)
-                            .rotate(item.angle)
                             .placeholder(R.drawable.defaultavatar)
                             .error(R.drawable.defaultavatar)
                             .into(content)

@@ -26,6 +26,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.project.proabt.adapters.ChatAdapter
+import com.project.proabt.attachment_types.CameraActivity
+import com.project.proabt.attachment_types.ReviewImageActivity
 import com.project.proabt.databinding.ActivityChatBinding
 import com.project.proabt.models.*
 import com.project.proabt.utils.KeyboardVisibilityUtil
@@ -119,6 +121,20 @@ class ChatActivity : AppCompatActivity() {
         binding.btnGallery.setOnClickListener {
             pickImageFromGallery()
         }
+        binding.btnCameraX.setOnClickListener {
+            val intent=Intent(this, CameraActivity::class.java)
+            intent.putExtra(UID, friendId)
+            intent.putExtra(NAME, name)
+            intent.putExtra(IMAGE, image)
+            startActivity(intent)
+        }
+        binding.btnCameraXButton.setOnClickListener {
+            val intent=Intent(this,CameraActivity::class.java)
+            intent.putExtra(UID, friendId)
+            intent.putExtra(NAME, name)
+            intent.putExtra(IMAGE, image)
+            startActivity(intent)
+        }
         binding.btnDocButton.setOnClickListener {
             pickDocument()
         }
@@ -200,6 +216,7 @@ class ChatActivity : AppCompatActivity() {
             intent.putExtra(NAME, name)
             intent.putExtra(IMAGE, image)
             intent.putExtra("SENTPHOTO", imageUri.toString())
+            intent.putExtra("SENTFROM","CHAT")
             startActivity(intent)
         }
         if (resultCode == Activity.RESULT_OK && requestCode == 1001) {

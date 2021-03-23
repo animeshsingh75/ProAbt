@@ -1,4 +1,4 @@
-package com.project.proabt
+package com.project.proabt.attachment_types
 
 import android.app.ProgressDialog
 import android.content.Context
@@ -18,11 +18,14 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.project.proabt.*
 import com.project.proabt.databinding.ActivityReviewImageBinding
 import com.project.proabt.models.Inbox
 import com.project.proabt.models.Message
 import com.project.proabt.models.User
 import com.squareup.picasso.Picasso
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import java.io.IOException
 
 
@@ -39,10 +42,12 @@ class ReviewImageActivity : AppCompatActivity() {
     private val sentphoto by lazy {
         Uri.parse(intent.getStringExtra("SENTPHOTO"))
     }
-    val picturePath by lazy{
+    val picturePath by lazy {
         intent.getStringExtra("PicturePath")
     }
-
+    val sentfrom by lazy {
+        intent.getStringExtra("SENTFROM")
+    }
     val storage by lazy {
         FirebaseStorage.getInstance()
     }
@@ -59,15 +64,17 @@ class ReviewImageActivity : AppCompatActivity() {
         FirebaseAuth.getInstance().uid!!
     }
     private lateinit var progressDialog: ProgressDialog
-    var angle:Float?=0F
+    var angle: Float? = 0F
     lateinit var msgMap: Message
     lateinit var binding: ActivityReviewImageBinding
     lateinit var downloadUrl: String
     lateinit var currentUser: User
+    lateinit var resulturi:Uri
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityReviewImageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Log.d("PhotoUrifromReviw", sentphoto.toString())
         binding.btnBack.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
             intent.putExtra(UID, friendId)
@@ -79,26 +86,21 @@ class ReviewImageActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 currentUser = it.toObject(User::class.java)!!
             }
+        startCrop(sentphoto)
         binding.btnSend.setOnClickListener {
             Log.d("ClickedFl", "Clicked")
+            uploadImage(resulturi)
             progressDialog = createProgressDialog("Sending a photo. Please wait", false)
             progressDialog.show()
-            uploadImage(sentphoto)
         }
-        angle=getOrientation(sentphoto).toFloat()
-        Log.d("Rotation",angle.toString())
-        binding.nameTv.text=name
+        angle = getOrientation().toFloat()
+        Log.d("Rotation", angle.toString())
+        binding.nameTv.text = name
         Picasso.get()
             .load(image)
             .placeholder(R.drawable.defaultavatar)
             .error(R.drawable.defaultavatar)
             .into(binding.userImgView)
-        Picasso.get()
-            .load(sentphoto)
-            .rotate(angle!!)
-            .placeholder(R.drawable.defaultavatar)
-            .error(R.drawable.defaultavatar)
-            .into(binding.sentImage)
     }
 
     private fun uploadImage(it: Uri) {
@@ -127,7 +129,8 @@ class ReviewImageActivity : AppCompatActivity() {
         getUser.get().addOnSuccessListener {
             val imageUrl = it.get("imageUrl") as String
             val senderName = it.get("name") as String
-            msgMap = Message(msgUrl, mCurrentUid, id, imageUrl, senderName, "IMAGE",angle = angle!!)
+            msgMap =
+                Message(msgUrl, mCurrentUid, id, imageUrl, senderName, "IMAGE", angle = angle!!)
             Log.d("msgMap", msgMap.imageUrl)
             getMessages(friendId!!).child(id).setValue(msgMap).addOnSuccessListener {
                 Log.d("CHATS", "Completed")
@@ -136,6 +139,13 @@ class ReviewImageActivity : AppCompatActivity() {
             }
             updateLastMessage(msgMap)
         }
+    }
+    private fun startCrop(imageUri: Uri?) {
+        CropImage.activity(imageUri)
+            .setGuidelines(CropImageView.Guidelines.ON)
+            .setInitialCropWindowPaddingRatio(0F)
+            .setAutoZoomEnabled(true)
+            .start(this)
     }
 
     private fun updateLastMessage(message: Message) {
@@ -196,13 +206,39 @@ class ReviewImageActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            if (resultCode == RESULT_OK) {
+                resulturi=result.uri
+                if (sentfrom == "CAM") {
+                    Picasso.get()
+                        .load(resulturi)
+                        .placeholder(R.drawable.defaultavatar)
+                        .error(R.drawable.defaultavatar)
+                        .into(binding.sentImage)
+                } else {
+                    Picasso.get()
+                        .load(resulturi)
+                        .rotate(angle!!)
+                        .placeholder(R.drawable.defaultavatar)
+                        .error(R.drawable.defaultavatar)
+                        .into(binding.sentImage)
+                }
+            }
+        }
+
+    }
+
     private fun getInbox(toUser: String, fromUser: String) =
         db.reference.child("chats/$toUser/$fromUser")
 
     private fun getMessages(friendId: String) = db.reference.child("messages/${getId(friendId)}")
     private val ROTATION_DEGREES = 90
+
     @Throws(IOException::class)
-    fun getOrientation(photoUri: Uri): Int {
+    fun getOrientation(): Int {
         val exif = ExifInterface(picturePath!!)
         var orientation: Int = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1)
         when (orientation) {
