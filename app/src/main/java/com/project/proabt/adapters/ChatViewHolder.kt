@@ -20,8 +20,8 @@ class ChatViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
             val titleTv=findViewById<TextView>(R.id.titleTv)
             val subtitleTv=findViewById<TextView>(R.id.subtitleTv)
             val userImgView=findViewById<ImageView>(R.id.userImgView1)
-            val imageSubtitle=findViewById<ImageView>(R.id.imageSubtitle)
-            val pdfSubtitle=findViewById<ImageView>(R.id.pdfSubtitle)
+            val subtitleImage=findViewById<ImageView>(R.id.subtitleImage)
+            subtitleImage.isVisible=true
             countTv.isVisible=item.count>0
             countTv.text=item.count.toString()
             timeTv.text=item.time.formatAsListItem(context)
@@ -29,13 +29,19 @@ class ChatViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
                 timeTv.isVisible=false
             }
             if(item.type=="IMAGE"){
-                imageSubtitle.isVisible=true
+                subtitleImage.setImageResource(R.drawable.ic_image_24)
                 subtitleTv.text="Image"
             }else if(item.type=="DOC"){
-                imageSubtitle.isVisible=true
-                subtitleTv.text="PDF"
+                subtitleImage.setImageResource(R.drawable.ic_pdf_image)
+                subtitleImage.setColorFilter(R.color.black)
+                subtitleTv.text="Doc"
+            }else if(item.type=="AUDIO"){
+                subtitleImage.setImageResource(R.drawable.ic_headphones_24)
+                subtitleImage.setColorFilter(R.color.black)
+                subtitleTv.text="Audio"
             }
             else{
+                subtitleImage.isVisible=false
                 subtitleTv.text=item.msg
             }
             titleTv.text=item.name

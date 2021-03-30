@@ -59,6 +59,11 @@
         <item name="cornerSizeTopLeft">22dp</item>
         <item name="cornerSizeTopRight">22dp</item>
     </style>
+    <style name="RoundedChatAudioViewSent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">9dp</item>
+        <item name="cornerSizeTopRight">9dp</item>
+    </style>
 
     <style name="SplashTheme" parent="Theme.WhatsappClone">
         <item name="android:windowFullscreen">true</item>

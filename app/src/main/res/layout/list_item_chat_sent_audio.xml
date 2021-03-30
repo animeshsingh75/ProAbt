@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="30dp"
+    android:paddingStart="16dp"
+    android:paddingTop="4dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="4dp">
+
+    <ImageView
+        android:id="@+id/highFiveImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/like_message"
+        android:src="@drawable/ic_high_five_inverted"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/materialCardView" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView"
+        android:layout_width="300dp"
+        android:layout_height="95dp"
+        android:elevation="0dp"
+        app:cardBackgroundColor="@color/purple_500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearance="@style/ChatShapeAppearance">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            app:alignItems="flex_end"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_end">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <RelativeLayout
+                    android:id="@+id/logotime"
+                    android:layout_width="70dp"
+                    android:layout_height="90dp"
+                    android:background="@drawable/audio_relative_layout">
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/content"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_headphones_24"
+                        app:shapeAppearanceOverlay="@style/RoundedChatAudioViewSent" />
+                    <TextView
+                        android:id="@+id/durationTv"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        android:textSize="14sp"
+                        android:text="1:40"/>
+                </RelativeLayout>
+                <ImageView
+                    android:id="@+id/playbtn"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/logotime"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_play_arrow_24"
+                    app:tint="#f3f3f3" />
+                <SeekBar
+                    android:id="@+id/seekBar"
+                    android:progressTint="#f3f3f3"
+                    android:thumbTint="#f3f3f3"
+                    android:progressBackgroundTint="#A6ffffff"
+                    android:layout_centerVertical="true"
+                    android:layout_width="170dp"
+                    android:layout_height="30dp"
+                    android:layout_toEndOf="@+id/playbtn"/>
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:textColor="#A6ffffff"
+                    android:textSize="12sp"
+                    tools:text="12:00AM" />
+            </RelativeLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

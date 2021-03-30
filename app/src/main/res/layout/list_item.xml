@@ -62,15 +62,8 @@
             android:layout_height="match_parent"
             android:gravity="center">
             <ImageView
-                android:id="@+id/imageSubtitle"
                 android:visibility="gone"
-                android:src="@drawable/ic_image_24"
-                android:layout_width="24dp"
-                android:layout_height="24dp"/>
-            <ImageView
-                android:id="@+id/pdfSubtitle"
-                android:visibility="gone"
-                android:src="@drawable/ic_pdf_image"
+                android:id="@+id/subtitleImage"
                 android:layout_width="24dp"
                 android:layout_height="24dp"/>
             <TextView

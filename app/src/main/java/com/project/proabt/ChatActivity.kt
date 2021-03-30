@@ -6,12 +6,10 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.provider.OpenableColumns
 import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +29,8 @@ import com.project.proabt.attachment_types.ReviewImageActivity
 import com.project.proabt.databinding.ActivityChatBinding
 import com.project.proabt.models.*
 import com.project.proabt.utils.KeyboardVisibilityUtil
+import com.project.proabt.utils.PathUtils
+import com.project.proabt.utils.formateMilliSeccond
 import com.project.proabt.utils.isSameDayAs
 import com.squareup.picasso.Picasso
 import com.vanniktech.emoji.EmojiManager
@@ -121,15 +121,22 @@ class ChatActivity : AppCompatActivity() {
         binding.btnGallery.setOnClickListener {
             pickImageFromGallery()
         }
+        binding.btnAudioButton.setOnClickListener {
+            pickAudio()
+        }
+        binding.btnAudio.setOnClickListener {
+            pickAudio()
+        }
+
         binding.btnCameraX.setOnClickListener {
-            val intent=Intent(this, CameraActivity::class.java)
+            val intent = Intent(this, CameraActivity::class.java)
             intent.putExtra(UID, friendId)
             intent.putExtra(NAME, name)
             intent.putExtra(IMAGE, image)
             startActivity(intent)
         }
         binding.btnCameraXButton.setOnClickListener {
-            val intent=Intent(this,CameraActivity::class.java)
+            val intent = Intent(this, CameraActivity::class.java)
             intent.putExtra(UID, friendId)
             intent.putExtra(NAME, name)
             intent.putExtra(IMAGE, image)
@@ -183,6 +190,15 @@ class ChatActivity : AppCompatActivity() {
         )
     }
 
+    private fun pickAudio() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "audio/*"
+        startActivityForResult(
+            intent,
+            1002
+        )
+    }
+
     private fun pickDocument() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(
                 this,
@@ -207,16 +223,16 @@ class ChatActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == 1000) {
             val imageUri = data?.data
-            Log.d("SENTPHOTO", imageUri.toString())
-            val picturePath = getPath(this, imageUri)
-            Log.d("Picture Path", picturePath!!)
+            Log.wtf("SENTPHOTO", imageUri.toString())
+            val picturePath = PathUtils.getPath(imageUri!!,this)
+            Log.wtf("SENTPHOTO", picturePath!!)
             val intent = Intent(this, ReviewImageActivity::class.java)
             intent.putExtra("PicturePath", picturePath)
             intent.putExtra(UID, friendId)
             intent.putExtra(NAME, name)
             intent.putExtra(IMAGE, image)
             intent.putExtra("SENTPHOTO", imageUri.toString())
-            intent.putExtra("SENTFROM","CHAT")
+            intent.putExtra("SENTFROM", "CHAT")
             startActivity(intent)
         }
         if (resultCode == Activity.RESULT_OK && requestCode == 1001) {
@@ -225,14 +241,25 @@ class ChatActivity : AppCompatActivity() {
             progressDialog.show()
             Log.d("PDFURI", "Progress Dialog")
             Log.d("PDFURI", pdfuri.toString())
-            val name=getFileName(pdfuri!!)
-            Log.d("PDFURI",name)
-            uploadDoc(pdfuri,name)
+            val name = PathUtils.getFileName(this, pdfuri!!)
+            Log.d("PDFURI", name)
+            uploadDoc(pdfuri, name)
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == 1002) {
+            val audiouri = data?.data
+            progressDialog = createProgressDialog("Sending a Audio. Please wait", false)
+            progressDialog.show()
+            Log.d("AUDIOURI", audiouri.toString())
+            val audioPath = PathUtils.getPath( audiouri!!,this)
+            Log.d("AUDIOURI", audioPath!!)
+            val duration = getDuration(audioPath)
+            Log.d("AUDIOURI", duration.toString())
+            uploadAudio(audiouri, duration.toString())
         }
     }
 
 
-    private fun uploadDoc(it: Uri,name:String) {
+    private fun uploadDoc(it: Uri, name: String) {
         val ref = storage.reference.child("uploads/doc/" + System.currentTimeMillis())
         val uploadTask = ref.putFile(it)
         uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
@@ -245,13 +272,42 @@ class ChatActivity : AppCompatActivity() {
         }).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 downloadUrl = task.result.toString()
-                sendMessage(downloadUrl, "DOC",name)
+                sendMessage(downloadUrl, "DOC", name)
 
             }
         }.addOnFailureListener {
 
         }
     }
+
+    private fun uploadAudio(it: Uri, duration: String) {
+        val ref = storage.reference.child("uploads/audio/" + System.currentTimeMillis())
+        val uploadTask = ref.putFile(it)
+        uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            return@Continuation ref.downloadUrl
+        }).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                downloadUrl = task.result.toString()
+                sendMessage(downloadUrl, "AUDIO", duration = duration)
+            }
+        }.addOnFailureListener {
+
+        }
+    }
+
+    private fun getDuration(path: String): String? {
+        val mediaMetadataRetriever = MediaMetadataRetriever()
+        mediaMetadataRetriever.setDataSource(path)
+        val durationStr =
+            mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        return formateMilliSeccond(durationStr!!.toLong())
+    }
+
     private fun markAsRead() {
         getInbox(mCurrentUid, friendId!!).child("count").setValue(0)
     }
@@ -318,15 +374,40 @@ class ChatActivity : AppCompatActivity() {
         chatAdapter.notifyItemChanged(position)
     }
 
-    private fun sendMessage(msg: String, type: String,fileName:String="") {
+    private fun sendMessage(
+        msg: String,
+        type: String,
+        fileName: String = "",
+        duration: String = ""
+    ) {
         val id = getMessages(friendId!!).push().key
         checkNotNull(id) { "Cannot by null" }
+        Log.d("Duration", "Duration:$duration")
         getUser.get().addOnSuccessListener {
             val imageUrl = it.get("imageUrl") as String
             val senderName = it.get("name") as String
-            msgMap = Message(msg, mCurrentUid, id, imageUrl, senderName, type)
-            if(type=="DOC"){
-                msgMap = Message(msg, mCurrentUid, id, imageUrl, senderName, type,fileName = fileName)
+            if (type == "DOC") {
+                msgMap = Message(
+                    msg,
+                    mCurrentUid,
+                    id,
+                    imageUrl,
+                    senderName,
+                    type,
+                    fileName = fileName
+                )
+            } else if (type == "AUDIO") {
+                msgMap = Message(
+                    msg,
+                    mCurrentUid,
+                    id,
+                    imageUrl,
+                    senderName,
+                    type,
+                    duration = duration
+                )
+            } else {
+                msgMap = Message(msg, mCurrentUid, id, imageUrl, senderName, type)
             }
             Log.d("msgMap", msgMap.imageUrl)
             getMessages(friendId!!).child(id).setValue(msgMap).addOnSuccessListener {
@@ -400,43 +481,6 @@ class ChatActivity : AppCompatActivity() {
             }
     }
 
-    fun getPath(context: Context, uri: Uri?): String? {
-        var result: String? = null
-        val proj = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor: Cursor? = context.contentResolver.query(uri!!, proj, null, null, null)
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                val column_index: Int = cursor.getColumnIndexOrThrow(proj[0])
-                result = cursor.getString(column_index)
-            }
-            cursor.close()
-        }
-        if (result == null) {
-            result = "Not found"
-        }
-        return result
-    }
-    fun getFileName(uri: Uri): String{
-        var result: String? = null
-        if (uri.scheme == "content") {
-            val cursor = contentResolver.query(uri, null, null, null, null)
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                }
-            } finally {
-                cursor!!.close()
-            }
-        }
-        if (result == null) {
-            result = uri.path
-            val cut = result!!.lastIndexOf('/')
-            if (cut != -1) {
-                result = result.substring(cut + 1)
-            }
-        }
-        return result
-    }
     private fun getId(friendId: String): String {
         return if (friendId > mCurrentUid) {
             mCurrentUid + friendId
@@ -487,5 +531,4 @@ class ChatActivity : AppCompatActivity() {
             return intent
         }
     }
-
 }

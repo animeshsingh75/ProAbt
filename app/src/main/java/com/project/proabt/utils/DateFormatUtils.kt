@@ -7,7 +7,25 @@ import com.project.proabt.R
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.*
+fun formateMilliSeccond(milliseconds: Long): String {
+    var finalTimerString = ""
+    var secondsString = ""
+    val hours = (milliseconds / (1000 * 60 * 60)).toInt()
+    val minutes = (milliseconds % (1000 * 60 * 60)).toInt() / (1000 * 60)
+    val seconds = (milliseconds % (1000 * 60 * 60) % (1000 * 60) / 1000).toInt()
 
+    // Add hours if there
+    if (hours > 0) {
+        finalTimerString = "$hours:"
+    }
+    secondsString = if (seconds < 10) {
+        "0$seconds"
+    } else {
+        "" + seconds
+    }
+    finalTimerString = "$finalTimerString$minutes:$secondsString"
+    return finalTimerString
+}
 private fun getCurrentLocale(context: Context): Locale {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         context.resources.configuration.locales[0]

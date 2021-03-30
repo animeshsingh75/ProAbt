@@ -221,7 +221,6 @@ class ReviewImageActivity : AppCompatActivity() {
                 } else {
                     Picasso.get()
                         .load(resulturi)
-                        .rotate(angle!!)
                         .placeholder(R.drawable.defaultavatar)
                         .error(R.drawable.defaultavatar)
                         .into(binding.sentImage)
