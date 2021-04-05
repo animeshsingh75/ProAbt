@@ -32,8 +32,7 @@ class ChatViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
                 subtitleImage.setImageResource(R.drawable.ic_image_24)
                 subtitleTv.text="Image"
             }else if(item.type=="DOC"){
-                subtitleImage.setImageResource(R.drawable.ic_pdf_image)
-                subtitleImage.setColorFilter(R.color.black)
+                subtitleImage.setImageResource(R.drawable.ic_pdf_inbox)
                 subtitleTv.text="Doc"
             }else if(item.type=="AUDIO"){
                 subtitleImage.setImageResource(R.drawable.ic_headphones_24)

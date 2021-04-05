@@ -1,4 +1,3 @@
-
 package com.project.proabt.models
 
 data class User(
@@ -8,16 +7,19 @@ data class User(
     val uid: String,
     val deviceToken: String,
     val status: String,
-    val onlineStatus: String
-
+    val onlineStatus: String,
+    val rating: Float = 0F,
+    val skills: List<String>
 ) {
-    constructor() : this("", "", "", "", "", "", "")
+    constructor() : this("", "", "", "", "", "", "", 0F, listOf())
     constructor(
         name: String,
         imageUrl: String,
         thumbImage: String,
         uid: String,
-        deviceToken: String
+        deviceToken: String,
+        rating: Float,
+        skills:List<String>
     ) : this(
         name,
         imageUrl,
@@ -25,6 +27,8 @@ data class User(
         uid,
         deviceToken,
         "Hey there I am using whatsapp",
-        ""
+        "",
+        rating=rating,
+        skills = skills
     )
 }

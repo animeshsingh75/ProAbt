@@ -9,16 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.project.proabt.*
-import com.project.proabt.adapters.EmptyViewHolder
-import com.project.proabt.adapters.UserViewHolder
-import com.project.proabt.models.User
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter
 import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.firebase.ui.firestore.paging.LoadingState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.project.proabt.*
+import com.project.proabt.adapters.EmptyViewHolder
+import com.project.proabt.adapters.UserViewHolder
+import com.project.proabt.models.User
 
 private const val DELETED_VIEW_TYPE = 1
 private const val NORMAL_VIEW_TYPE = 2
@@ -30,8 +30,11 @@ class PeopleFragment : Fragment() {
     }
     val database by lazy {
         FirebaseFirestore.getInstance().collection("users")
-            .orderBy("name", Query.Direction.ASCENDING)
+            .orderBy("rating", Query.Direction.DESCENDING)
     }
+//    val db by lazy {
+////        FirebaseFirestore.getInstance().collection("users").whereEqualTo()
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

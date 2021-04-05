@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -78,7 +79,23 @@ class ChatActivity : AppCompatActivity() {
     lateinit var chatAdapter: ChatAdapter
     lateinit var currentUser: User
     lateinit var keyboardVisibilityHelper: KeyboardVisibilityUtil
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.chat_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id=item.itemId
 
+        when(id){
+            R.id.rateUser->{
+                val intent=Intent(this,RateUserActivity::class.java)
+                intent.putExtra(NAME,name)
+                intent.putExtra(UID,friendId)
+                startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         EmojiManager.install(GoogleEmojiProvider())
@@ -87,6 +104,7 @@ class ChatActivity : AppCompatActivity() {
         keyboardVisibilityHelper = KeyboardVisibilityUtil(binding.rootView) {
             binding.msgRv.scrollToPosition(messages.size - 1)
         }
+        Log.d("Messages","${messages.count()}")
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -224,7 +242,7 @@ class ChatActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK && requestCode == 1000) {
             val imageUri = data?.data
             Log.wtf("SENTPHOTO", imageUri.toString())
-            val picturePath = PathUtils.getPath(imageUri!!,this)
+            val picturePath = PathUtils.getPath(imageUri!!, this)
             Log.wtf("SENTPHOTO", picturePath!!)
             val intent = Intent(this, ReviewImageActivity::class.java)
             intent.putExtra("PicturePath", picturePath)
@@ -250,7 +268,7 @@ class ChatActivity : AppCompatActivity() {
             progressDialog = createProgressDialog("Sending a Audio. Please wait", false)
             progressDialog.show()
             Log.d("AUDIOURI", audiouri.toString())
-            val audioPath = PathUtils.getPath( audiouri!!,this)
+            val audioPath = PathUtils.getPath(audiouri!!, this)
             Log.d("AUDIOURI", audioPath!!)
             val duration = getDuration(audioPath)
             Log.d("AUDIOURI", duration.toString())
@@ -409,7 +427,6 @@ class ChatActivity : AppCompatActivity() {
             } else {
                 msgMap = Message(msg, mCurrentUid, id, imageUrl, senderName, type)
             }
-            Log.d("msgMap", msgMap.imageUrl)
             getMessages(friendId!!).child(id).setValue(msgMap).addOnSuccessListener {
                 Log.d("CHATS", "Completed")
             }.addOnFailureListener {

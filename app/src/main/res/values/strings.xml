@@ -26,4 +26,13 @@
     <string name="please_provide_your_name_and_a_profile_photo">Please provide your name and a profile photo</string>
     <string name="type_your_name_here">Type your name here</string>
     <string name="default_notification_channel_id">proabt</string>
+    <string-array name="skillsList">
+        <item>--Not selected--</item>
+        <item>App Dev</item>
+        <item>C++</item>
+        <item>Java</item>
+        <item>ML &amp; AI</item>
+        <item>Python</item>
+        <item>Web Dev</item>
+    </string-array>
 </resources>

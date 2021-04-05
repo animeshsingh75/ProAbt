@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    tools:context=".RateUserActivity">
+
+    <ImageView
+        android:id="@+id/closeBtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="25dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_close_btn" />
+
+    <TextView
+        android:id="@+id/rateTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/closeBtn"
+        android:layout_marginTop="50dp"
+        android:foregroundGravity="center_vertical"
+        android:gravity="center_horizontal"
+        android:text="Pls rate the user"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        tools:ignore="RtlCompat" />
+
+    <ImageView
+        android:id="@+id/rate_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/rateTv"
+        android:foregroundGravity="center"
+        android:src="@drawable/ic_rate_user" />
+
+    <RelativeLayout
+        android:id="@+id/star_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rate_image"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:id="@+id/rate1"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_star_unrated" />
+        <ImageView
+            android:id="@+id/rate2"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@+id/rate1"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_star_unrated" />
+
+        <ImageView
+            android:id="@+id/rate3"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="40dp"
+            android:layout_toEndOf="@+id/rate2"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_star_unrated" />
+
+        <ImageView
+            android:id="@+id/rate4"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@+id/rate3"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_star_unrated" />
+
+        <ImageView
+            android:id="@+id/rate5"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/rate4"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_star_unrated" />
+        <Button
+            android:id="@+id/submitBtn"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="60dp"
+            android:text="Submit"
+            android:padding="10dp"
+            android:textAlignment="center"
+            android:layout_below="@+id/rate3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"/>
+    </RelativeLayout>
+</RelativeLayout>

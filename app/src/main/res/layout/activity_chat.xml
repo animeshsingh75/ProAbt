@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootView"
-    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ChatActivity">
@@ -51,7 +50,6 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/inputBox"
         android:layout_below="@+id/toolbar">
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/msgRv"
             android:layout_width="match_parent"
@@ -59,16 +57,16 @@
             android:overScrollMode="ifContentScrolls"
             tools:itemCount="10"
             tools:listitem="@layout/list_item_chat_sent_message" />
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <RelativeLayout
         android:id="@+id/layout_actions_container"
-        android:visibility="gone"
-        android:gravity="bottom"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@+id/inputBox"
         android:focusableInTouchMode="true"
-        android:layout_height="match_parent">
+        android:gravity="bottom"
+        android:visibility="gone">
+
         <androidx.cardview.widget.CardView
             android:id="@+id/layout_actions"
             android:layout_width="match_parent"
@@ -78,6 +76,7 @@
             android:layout_marginBottom="10dp"
             app:cardCornerRadius="15dp"
             app:cardElevation="5dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -240,7 +239,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:scaleType="centerCrop"
-                            app:shapeAppearanceOverlay="@style/RoundedImageViewSmall"/>
+                            app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -310,13 +309,13 @@
                     android:id="@+id/attachment"
                     android:layout_width="26dp"
                     android:layout_height="42dp"
-                    android:layout_toStartOf="@+id/msgEdTv"
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="6dp"
                     android:layout_marginEnd="16dp"
-                    android:rotation="-45"
+                    android:layout_toStartOf="@+id/msgEdTv"
                     android:clickable="true"
                     android:focusable="true"
+                    android:rotation="-45"
                     android:src="@drawable/ic_attachment" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>

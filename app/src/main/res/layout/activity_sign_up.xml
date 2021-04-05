@@ -23,9 +23,8 @@
         android:fontFamily="sans-serif-condensed"
         android:gravity="center"
         android:padding="15dp"
-        android:text="@string/please_provide_your_name_and_a_profile_photo"
+        android:text="Please provide your name,skills and profile photo"
         android:textSize="16sp" />
-
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/userImgView"
         android:layout_width="120dp"
@@ -53,6 +52,121 @@
         android:maxLines="1"
         android:singleLine="true"
         android:textSize="16sp" />
+    <TextView
+        android:layout_marginTop="20dp"
+        android:textSize="23sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select your skills"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="Please add atleast one and maximum three skills"
+        android:textSize="14sp" />
+    <Spinner
+        android:id="@+id/skillsSpinner"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="20dp" />
+
+    <LinearLayout
+        android:id="@+id/skillsContainer"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <RelativeLayout
+            android:id="@+id/skillLayout1"
+            android:padding="5dp"
+            android:layout_width="115dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_gravity="center"
+            android:background="@drawable/star_layout">
+
+            <TextView
+                android:id="@+id/skillTv1"
+                android:layout_marginStart="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="App Dev"
+                android:textSize="16sp" />
+            <ImageView
+                android:id="@+id/closeBtn1"
+                android:layout_marginTop="2dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="7dp"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_close_btn"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/skillLayout2"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:layout_width="115dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_gravity="center"
+            android:background="@drawable/star_layout">
+
+            <TextView
+                android:id="@+id/skillTv2"
+                android:layout_marginStart="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ML &amp; AI"
+                android:textSize="16sp" />
+            <ImageView
+                android:id="@+id/closeBtn2"
+                android:layout_marginTop="2dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="7dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_close_btn"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/skillLayout3"
+            android:padding="5dp"
+            android:layout_width="115dp"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_gravity="center"
+            android:background="@drawable/star_layout">
+
+            <TextView
+                android:id="@+id/skillTv3"
+                android:layout_marginStart="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Web Dev"
+                android:textSize="16sp" />
+            <ImageView
+                android:id="@+id/closeBtn3"
+                android:layout_marginTop="2dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="7dp"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_close_btn"/>
+        </RelativeLayout>
+    </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/nextBtn"

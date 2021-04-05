@@ -40,6 +40,7 @@
             app:flexWrap="wrap"
             app:justifyContent="flex_end">
             <TextView
+                android:autoLink="phone|web"
                 tools:text="Hello World"
                 android:id="@+id/content"
                 android:textSize="14sp"
