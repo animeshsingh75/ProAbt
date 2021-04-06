@@ -29,8 +29,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginStart="12dp"
             android:layout_height="match_parent"
+            android:layout_marginStart="12dp"
             android:gravity="center">
 
             <TextView
@@ -38,10 +38,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="12dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:lines="1"
-                android:layout_marginBottom="5dp"
                 android:text="Animesh Singh"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
@@ -62,141 +62,104 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
+
             <LinearLayout
                 android:id="@+id/skillsContainer"
-                android:visibility="gone"
                 android:layout_width="0dp"
-                android:layout_weight="6"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="6"
                 android:gravity="center">
 
                 <RelativeLayout
                     android:id="@+id/skillLayout1"
-                    android:padding="5dp"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/star_layout"
                     android:gravity="center"
-                    android:background="@drawable/star_layout">
+                    android:padding="5dp">
 
                     <TextView
                         android:id="@+id/skillTv1"
-                        android:layout_marginStart="5dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
                         android:text="App Dev"
                         android:textSize="14sp" />
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:id="@+id/skillLayout2"
-                    android:padding="5dp"
-                    android:gravity="center"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:background="@drawable/star_layout">
+                    android:layout_weight="1"
+                    android:background="@drawable/star_layout"
+                    android:gravity="center"
+                    android:padding="5dp">
 
                     <TextView
                         android:id="@+id/skillTv2"
-                        android:layout_marginStart="5dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
                         android:text="ML &amp; AI"
                         android:textSize="14sp" />
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/skillLayout3"
-                    android:padding="5dp"
                     android:layout_width="0dp"
-                    android:visibility="gone"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/star_layout"
                     android:gravity="center"
-                    android:background="@drawable/star_layout">
+                    android:padding="5dp">
+
                     <TextView
                         android:id="@+id/skillTv3"
-                        android:layout_marginStart="5dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
                         android:text="Web Dev"
                         android:textSize="14sp" />
                 </RelativeLayout>
             </LinearLayout>
-            <ImageView
-                android:id="@+id/subtitleImage"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:visibility="gone" />
-            <TextView
-                android:id="@+id/subtitleTv"
-                android:layout_width="0dp"
-                android:visibility="gone"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:layout_weight="3"
-                android:ellipsize="end"
-                android:lines="1"
-                android:text="Hey there, I am using whatsapp"
-                android:textColor="@android:color/black"
-                android:textSize="14sp" />
-
             <RelativeLayout
                 android:id="@+id/rating_layout"
                 android:layout_width="0dp"
-                android:layout_weight="2"
-                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_weight="2"
                 android:background="@drawable/star_layout"
                 android:gravity="center">
-
                 <ImageView
                     android:id="@+id/starImage"
                     android:layout_width="20dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:src="@drawable/ic_star_rated" />
-
                 <TextView
                     android:id="@+id/ratingTv"
-                    android:textSize="16sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@+id/starImage"
-                    android:text="4.4" />
+                    android:text="4.4"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
                     android:layout_marginEnd="5dp"
                     android:layout_toEndOf="@+id/ratingTv"
-                    android:text="/5.0" />
+                    android:text="/5.0"
+                    android:textSize="16sp" />
             </RelativeLayout>
-
-            <TextView
-                android:id="@+id/countTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/count_background"
-                android:ellipsize="end"
-                android:lines="1"
-                android:paddingStart="8dp"
-                android:paddingTop="2dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="2dp"
-                android:text="6"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 

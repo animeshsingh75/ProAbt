@@ -294,16 +294,16 @@ object PathUtils {
         val size = java.lang.Long.toString(returnCursor.getLong(sizeIndex))
         val output: File
         if (newDirName != "") {
-            val dir = File(context!!.filesDir.toString() + "/" + newDirName)
+            val dir = File(context.filesDir.toString() + "/" + newDirName)
             if (!dir.exists()) {
                 dir.mkdir()
             }
-            output = File(context!!.filesDir.toString() + "/" + newDirName + "/" + name)
+            output = File(context.filesDir.toString() + "/" + newDirName + "/" + name)
         } else {
-            output = File(context!!.filesDir.toString() + "/" + name)
+            output = File(context.filesDir.toString() + "/" + name)
         }
         try {
-            val inputStream: InputStream? = context!!.contentResolver.openInputStream(uri)
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
             val outputStream = FileOutputStream(output)
             var read = 0
             val bufferSize = 1024

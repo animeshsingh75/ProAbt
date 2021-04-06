@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="300dp"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentBottom="true"
+    android:layout_margin="45dp"
+    android:background="#ffffff">
+    <ImageView
+        android:id="@+id/closeBtn"
+        android:layout_margin="9dp"
+        android:layout_alignParentEnd="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_close_btn"/>
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:buttonTint="@color/purple_500"
+            android:id="@+id/none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="None" />
+        <RadioButton
+            android:buttonTint="@color/purple_500"
+            android:id="@+id/cPlus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="C++" />
+
+        <RadioButton
+            android:buttonTint="@color/purple_500"
+            android:id="@+id/java"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="Java" />
+
+        <RadioButton
+            android:buttonTint="@color/purple_500"
+            android:id="@+id/python"
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Python" />
+        <RadioButton
+            android:buttonTint="@color/purple_500"
+            android:id="@+id/mlAi"
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ML &amp; AI" />
+        <RadioButton
+            android:buttonTint="@color/purple_500"
+            android:id="@+id/appDev"
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="App dev" />
+        <RadioButton
+            android:buttonTint="@color/purple_500"
+            android:id="@+id/webDev"
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Web Dev" />
+    </RadioGroup>
+</RelativeLayout>

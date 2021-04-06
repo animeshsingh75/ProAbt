@@ -8,19 +8,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.project.proabt.ChatActivity
-import com.project.proabt.R
-import com.project.proabt.models.Inbox
+import androidx.viewpager2.widget.ViewPager2
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
+import com.project.proabt.ChatActivity
+import com.project.proabt.R
 import com.project.proabt.adapters.ChatViewHolder
+import com.project.proabt.models.Inbox
 
 
 class InboxFragment : Fragment() {
-
     private lateinit var mAdapter: FirebaseRecyclerAdapter<Inbox, ChatViewHolder>
     private lateinit var viewManager: RecyclerView.LayoutManager
     private val mDatabase by lazy {
@@ -29,16 +30,22 @@ class InboxFragment : Fragment() {
     private val auth by lazy {
         FirebaseAuth.getInstance()
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         viewManager = LinearLayoutManager(requireContext())
         setupAdapter()
-        return inflater.inflate(R.layout.fragment_chats, container, false)
+        val view= inflater.inflate(R.layout.fragment_inbox, container, false)
+        val btnAddPerson= view?.findViewById<FloatingActionButton>(R.id.btnAddPerson)
+        val viewPager= activity?.findViewById<ViewPager2>(R.id.viewPager)
+        btnAddPerson!!.bringToFront()
+        btnAddPerson.setOnClickListener {
+            Log.d("Clicked","Clicked")
+            viewPager?.setCurrentItem(1,true)
+        }
+        return view
     }
-
     private fun setupAdapter() {
 
         val baseQuery: Query =
@@ -51,7 +58,7 @@ class InboxFragment : Fragment() {
         mAdapter = object : FirebaseRecyclerAdapter<Inbox, ChatViewHolder>(options) {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
                 val inflater = layoutInflater
-                return ChatViewHolder(inflater.inflate(R.layout.list_item, parent, false))
+                return ChatViewHolder(inflater.inflate(R.layout.list_item_inbox, parent, false))
             }
 
             override fun onBindViewHolder(
@@ -89,8 +96,6 @@ class InboxFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.apply {
-            // use this setting to improve performance if you know that changes
-            // in content do not change the layout size of the RecyclerView
             setHasFixedSize(true)
             layoutManager = viewManager
             adapter = mAdapter

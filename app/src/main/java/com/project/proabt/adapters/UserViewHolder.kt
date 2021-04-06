@@ -15,10 +15,8 @@ import com.squareup.picasso.Picasso
 class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(user: User, onClick: (name: String, photo: String, id: String) -> Unit) =
         with(itemView) {
-            val countTv = itemView.findViewById<TextView>(R.id.countTv)
             val timeTv = itemView.findViewById<TextView>(R.id.timeTv)
             val titleTv = itemView.findViewById<TextView>(R.id.titleTv)
-            val subtitleTv = itemView.findViewById<TextView>(R.id.subtitleTv)
             val userImgView = itemView.findViewById<ShapeableImageView>(R.id.userImgView1)
             val ratingLayout = itemView.findViewById<RelativeLayout>(R.id.rating_layout)
             val ratingTv = itemView.findViewById<TextView>(R.id.ratingTv)
@@ -29,7 +27,6 @@ class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val skillTv2 = itemView.findViewById<TextView>(R.id.skillTv2)
             val skillLayout3 = itemView.findViewById<RelativeLayout>(R.id.skillLayout3)
             val skillTv3 = itemView.findViewById<TextView>(R.id.skillTv3)
-            countTv.isVisible = false
             timeTv.isVisible = false
             ratingLayout.isVisible=true
             skillsContainer.isVisible=true
@@ -48,7 +45,6 @@ class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
             ratingTv.text=rating
             titleTv.text = user.name
-            subtitleTv.text = user.status
             Picasso.get()
                 .load(user.thumbImage)
                 .placeholder(R.drawable.defaultavatar)

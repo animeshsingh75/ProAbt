@@ -22,11 +22,13 @@ class ChatViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
             val userImgView=findViewById<ImageView>(R.id.userImgView1)
             val subtitleImage=findViewById<ImageView>(R.id.subtitleImage)
             subtitleImage.isVisible=true
+            subtitleImage.setImageResource(R.drawable.ic_pdf_inbox)
             countTv.isVisible=item.count>0
             countTv.text=item.count.toString()
             timeTv.text=item.time.formatAsListItem(context)
             if(item.msg==""){
                 timeTv.isVisible=false
+                subtitleImage.isVisible=false
             }
             if(item.type=="IMAGE"){
                 subtitleImage.setImageResource(R.drawable.ic_image_24)
