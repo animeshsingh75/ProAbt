@@ -2,6 +2,7 @@ package com.project.proabt.models
 
 data class User(
     val name: String,
+    val upper_name:String,
     val imageUrl: String,
     val thumbImage: String,
     val uid: String,
@@ -11,9 +12,10 @@ data class User(
     val rating: Float = 0F,
     val skills: List<String>
 ) {
-    constructor() : this("", "", "", "", "", "", "", 0F, listOf())
+    constructor() : this("","", "", "", "", "", "", "", 0F, listOf())
     constructor(
         name: String,
+        upper_name: String=name.toUpperCase(),
         imageUrl: String,
         thumbImage: String,
         uid: String,
@@ -22,6 +24,7 @@ data class User(
         skills:List<String>
     ) : this(
         name,
+        upper_name,
         imageUrl,
         thumbImage,
         uid,

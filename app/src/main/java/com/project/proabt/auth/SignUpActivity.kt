@@ -139,6 +139,7 @@ class SignUpActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                         }
                         val user = User(
                             name,
+                            name.toUpperCase(),
                             downloadUrl,
                             thumbnailUrl,
                             auth.uid!!,

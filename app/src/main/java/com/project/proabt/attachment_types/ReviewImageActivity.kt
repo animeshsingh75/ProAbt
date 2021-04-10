@@ -153,6 +153,7 @@ class ReviewImageActivity : AppCompatActivity() {
             message.msg,
             friendId!!,
             name!!,
+            name!!.toUpperCase(),
             image!!,
             count = 0,
             type = "IMAGE"

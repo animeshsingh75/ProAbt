@@ -101,7 +101,7 @@ class RateUserActivity : AppCompatActivity() {
                                                     .getValue(FriendRating::class.java)
                                             val currentTime = System.currentTimeMillis() / 1000
                                             val timeDifference = currentTime - friendRating!!.sentAt
-                                            if (timeDifference > 5) {
+                                            if (timeDifference >=24*60*60) {
                                                 val newRating =
                                                     ((rating!!.avgRating * rating.totalPeople) - friendRating.indiRating + indivRating) / rating.totalPeople
                                                 avgRating = newRating
@@ -165,6 +165,7 @@ class RateUserActivity : AppCompatActivity() {
                 currentUser = it.toObject(User::class.java)!!
                 val user = User(
                     currentUser.name,
+                    currentUser.upper_name,
                     currentUser.imageUrl,
                     currentUser.thumbImage,
                     currentUser.uid,
