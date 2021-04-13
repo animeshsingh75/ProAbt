@@ -1,4 +1,4 @@
-package com.project.proabt
+package com.project.proabt.setting
 
 import android.Manifest
 import android.app.AlertDialog
@@ -18,6 +18,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
+import com.project.proabt.R
 import com.project.proabt.databinding.ActivityProfileCameraBinding
 import java.io.File
 import java.text.SimpleDateFormat

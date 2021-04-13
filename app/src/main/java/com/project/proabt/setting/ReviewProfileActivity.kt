@@ -1,4 +1,4 @@
-package com.project.proabt
+package com.project.proabt.setting
 
 import android.app.ProgressDialog
 import android.content.Context
@@ -14,6 +14,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.project.proabt.R
+import com.project.proabt.SettingActivity
 import com.project.proabt.databinding.ActivityReviewProfileBinding
 import com.project.proabt.models.User
 import com.squareup.picasso.Picasso
@@ -41,7 +43,7 @@ class ReviewProfileActivity : AppCompatActivity() {
     private lateinit var progressDialog: ProgressDialog
     var angle: Float? = 0F
     lateinit var downloadUrl: String
-    lateinit var thumbnailUrl:String
+    lateinit var thumbnailUrl: String
     lateinit var currentUser: User
     lateinit var resulturi: Uri
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +89,8 @@ class ReviewProfileActivity : AppCompatActivity() {
                         val ref =
                             storage.reference.child("profile_pics/" + mCurrentUid + "_120x120").downloadUrl.addOnSuccessListener {
                                 thumbnailUrl = it.toString()
-                                FirebaseFirestore.getInstance().collection("users").document(mCurrentUid).get()
+                                FirebaseFirestore.getInstance().collection("users")
+                                    .document(mCurrentUid).get()
                                     .addOnSuccessListener {
                                         currentUser = it.toObject(User::class.java)!!
                                         currentUser = User(
@@ -100,11 +103,15 @@ class ReviewProfileActivity : AppCompatActivity() {
                                             currentUser.rating,
                                             currentUser.skills
                                         )
-                                        database.collection("users").document(mCurrentUid).set(currentUser)
+                                        database.collection("users").document(mCurrentUid)
+                                            .set(currentUser)
                                             .addOnSuccessListener {
-
-                                                startActivity(Intent(this, MainActivity::class.java))
-
+                                                startActivity(
+                                                    Intent(
+                                                        this,
+                                                        SettingActivity::class.java
+                                                    )
+                                                )
                                             }.addOnFailureListener {
                                             }
                                     }
@@ -147,7 +154,9 @@ class ReviewProfileActivity : AppCompatActivity() {
             }
         }
     }
+
     private val ROTATION_DEGREES = 90
+
     @Throws(IOException::class)
     fun getOrientation(): Int {
         val exif = ExifInterface(picturePath!!)

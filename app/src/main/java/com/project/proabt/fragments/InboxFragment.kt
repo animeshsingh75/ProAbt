@@ -18,12 +18,12 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
 import com.project.proabt.ChatActivity
 import com.project.proabt.R
-import com.project.proabt.utils.SearchViewModel
 import com.project.proabt.adapters.ChatViewHolder
 import com.project.proabt.models.Inbox
+import com.project.proabt.utils.SearchViewModel
+
 
 lateinit var mAdapterInbox: FirebaseRecyclerAdapter<Inbox, ChatViewHolder>
-
 class InboxFragment : Fragment() {
     private lateinit var viewManager: RecyclerView.LayoutManager
     private val mDatabase by lazy {
@@ -64,7 +64,6 @@ class InboxFragment : Fragment() {
                 val inflater = layoutInflater
                 return ChatViewHolder(inflater.inflate(R.layout.list_item_inbox, parent, false))
             }
-
             override fun onBindViewHolder(
                 viewHolder: ChatViewHolder,
                 position: Int,

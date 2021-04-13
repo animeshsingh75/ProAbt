@@ -41,14 +41,15 @@
                 android:layout_width="200dp"
                 android:layout_height="200dp"/>
             <View
-                android:layout_marginTop="7dp"
+                android:layout_marginTop="17dp"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="#d7d7d7"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/account"
-            android:layout_marginTop="25dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="35dp"
             android:layout_below="@+id/profilePic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -69,6 +70,7 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <LinearLayout
+            android:layout_marginStart="10dp"
             android:id="@+id/rateApp"
             android:layout_marginTop="25dp"
             android:layout_below="@+id/account"
@@ -90,6 +92,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginStart="10dp"
             android:id="@+id/viewRating"
             android:clickable="true"
             android:focusable="true"
@@ -112,6 +115,7 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <LinearLayout
+            android:layout_marginStart="10dp"
             android:id="@+id/logout"
             android:layout_marginTop="25dp"
             android:layout_below="@+id/viewRating"

@@ -19,10 +19,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatsappClone">
-        <activity android:name=".ReviewProfileActivity"></activity>
-        <activity android:name=".ProfileCameraActivity" />
-        <activity android:name=".ShowRatingActivity" />
-        <activity android:name=".EditProfActivity" />
+        <activity android:name=".setting.ReviewProfileActivity"></activity>
+        <activity android:name=".setting.ProfileCameraActivity" />
+        <activity android:name=".setting.EditProfActivity" />
         <activity android:name=".RateUserActivity" />
         <activity android:name=".attachment_types.CameraActivity" />
         <activity android:name=".attachment_types.ViewImageActivity" />
@@ -41,6 +40,11 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.project.proabt.MainActivity" />
+        </activity>
+        <activity android:name=".ShowRatingActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.project.proabt.SettingActivity" />
         </activity>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

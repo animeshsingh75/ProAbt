@@ -24,6 +24,7 @@ import com.google.firebase.storage.UploadTask
 import com.project.proabt.auth.LoginActivity
 import com.project.proabt.databinding.ActivitySettingBinding
 import com.project.proabt.models.User
+import com.project.proabt.setting.ProfileCameraActivity
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
