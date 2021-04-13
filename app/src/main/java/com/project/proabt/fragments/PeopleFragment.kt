@@ -45,7 +45,7 @@ class PeopleFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         setupAdapter()
         val view = inflater.inflate(R.layout.fragment_people, container, false)
         val btnAddFilter = view?.findViewById<FloatingActionButton>(R.id.btnAddFilter)

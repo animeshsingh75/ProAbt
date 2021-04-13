@@ -45,6 +45,7 @@ class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
             ratingTv.text=rating
             titleTv.text = user.name
+            Log.d("URL",user.thumbImage)
             Picasso.get()
                 .load(user.thumbImage)
                 .placeholder(R.drawable.defaultavatar)

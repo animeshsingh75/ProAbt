@@ -13,8 +13,6 @@ import android.text.style.ClickableSpan
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.project.proabt.MainActivity
-import com.project.proabt.R.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseException
@@ -22,6 +20,8 @@ import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.project.proabt.MainActivity
+import com.project.proabt.R.string
 import com.project.proabt.databinding.ActivityOtpBinding
 import java.util.concurrent.TimeUnit
 
@@ -67,7 +67,6 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
                 showLoginActivity()
             }
         }
-
         span.setSpan(clickSpan, span.length - 13, span.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         binding.waitingTv.movementMethod = LinkMovementMethod.getInstance()
         binding.waitingTv.text = span

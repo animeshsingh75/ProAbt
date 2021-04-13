@@ -48,9 +48,7 @@ object PathUtils {
         val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
         var selection: String? = null
         var selectionArgs: Array<String>? = null
-        // DocumentProvider
         if (isKitKat) {
-            // ExternalStorageProvider
             if (isExternalStorageDocument(uri)) {
                 val docId = DocumentsContract.getDocumentId(uri)
                 val split = docId.split(":".toRegex()).toTypedArray()
@@ -62,9 +60,6 @@ object PathUtils {
                     null
                 }
             }
-
-
-            // DownloadsProvider
             if (isDownloadsDocument(uri)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     val id: String
@@ -105,7 +100,6 @@ object PathUtils {
                                 )
                                 getDataColumn(context, contentUri, null, null)
                             } catch (e: NumberFormatException) {
-                                //In Android 8 and Android P the id is not a number
                                 uri.path!!.replaceFirst("^/document/raw:".toRegex(), "")
                                     .replaceFirst("^raw:".toRegex(), "")
                             }
@@ -129,9 +123,6 @@ object PathUtils {
                     }
                 }
             }
-
-
-            // MediaProvider
             if (isMediaDocument(uri)) {
                 val docId = DocumentsContract.getDocumentId(uri)
                 val split = docId.split(":".toRegex()).toTypedArray()
@@ -165,10 +156,7 @@ object PathUtils {
                     return getDriveFilePath(context!!,uri)
                 }
                 return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-
-                    // return getFilePathFromURI(context,uri);
                     copyFileToInternalStorage(uri, "userfiles",context!!)
-                    // return getRealPathFromURI(context,uri);
                 } else {
                     getDataColumn(context, uri, null, null)
                 }
@@ -209,24 +197,12 @@ object PathUtils {
         val type = pathData[0]
         val relativePath = "/" + pathData[1]
         var fullPath = ""
-
-        // on my Sony devices (4.4.4 & 5.1.1), `type` is a dynamic string
-        // something like "71F8-2C0A", some kind of unique id per storage
-        // don't know any API that can get the root path of that storage based on its id.
-        //
-        // so no "primary" type, but let the check here for other devices
         if ("primary".equals(type, ignoreCase = true)) {
             fullPath = Environment.getExternalStorageDirectory().toString() + relativePath
             if (fileExists(fullPath)) {
                 return fullPath
             }
         }
-
-        // Environment.isExternalStorageRemovable() is `true` for external and internal storage
-        // so we cannot relay on it.
-        //
-        // instead, for each possible path, check if file exists
-        // we'll start with secondary storage as this could be our (physically) removable sd card
         fullPath = System.getenv("SECONDARY_STORAGE") + relativePath
         if (fileExists(fullPath)) {
             return fullPath
@@ -239,25 +215,18 @@ object PathUtils {
 
     private fun getDriveFilePath(context:Context,uri: Uri): String? {
         val returnCursor = context.contentResolver.query(uri, null, null, null, null)
-        /*
-         * Get the column indexes of the data in the Cursor,
-         *     * move to the first row in the Cursor, get the data,
-         *     * and display it.
-         * */
         val nameIndex = returnCursor!!.getColumnIndex(OpenableColumns.DISPLAY_NAME)
         val sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE)
         returnCursor.moveToFirst()
         val name = returnCursor.getString(nameIndex)
         val size = java.lang.Long.toString(returnCursor.getLong(sizeIndex))
-        val file = File(context!!.cacheDir, name)
+        val file = File(context.cacheDir, name)
         try {
-            val inputStream: InputStream? = context!!.contentResolver.openInputStream(uri)
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
             val outputStream = FileOutputStream(file)
             var read = 0
             val maxBufferSize = 1 * 1024 * 1024
             val bytesAvailable: Int = inputStream!!.available()
-
-            //int bufferSize = 1024;
             val bufferSize = Math.min(bytesAvailable, maxBufferSize)
             val buffers = ByteArray(bufferSize)
             while (inputStream.read(buffers).also { read = it } != -1) {
@@ -271,17 +240,11 @@ object PathUtils {
         } catch (e: Exception) {
             e.message?.let { Log.e("Exception", it) }
         }
-        return file.getPath()
+        return file.path
     }
 
-    /***
-     * Used for Android Q+
-     * @param uri
-     * @param newDirName if you want to create a directory, you can set this variable
-     * @return
-     */
     private fun copyFileToInternalStorage(uri: Uri, newDirName: String,context: Context): String? {
-        val returnCursor = context!!.contentResolver.query(
+        val returnCursor = context.contentResolver.query(
             uri, arrayOf(
                 OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE
             ), null, null, null
@@ -316,7 +279,7 @@ object PathUtils {
         } catch (e: Exception) {
             e.message?.let { Log.e("Exception", it) }
         }
-        return output.getPath()
+        return output.path
     }
 
     private fun getFilePathForWhatsApp(uri: Uri,context: Context): String? {
@@ -363,7 +326,7 @@ object PathUtils {
         return "com.google.android.apps.photos.content" == uri.authority
     }
 
-    fun isWhatsAppFile(uri: Uri): Boolean {
+    private fun isWhatsAppFile(uri: Uri): Boolean {
         return "com.whatsapp.provider.media" == uri.authority
     }
 

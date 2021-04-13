@@ -2,15 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/history"
-        android:title="Settings"
-        android:iconTint="@android:color/white"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:iconTint="@android:color/white"
+        android:icon="@drawable/ic_search_white"
         android:title="Search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
