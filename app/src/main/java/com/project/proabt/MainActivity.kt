@@ -18,6 +18,7 @@ import com.project.proabt.adapters.ScreenSliderAdapter
 import com.project.proabt.databinding.ActivityMainBinding
 import com.project.proabt.fragments.InboxFragment
 import com.project.proabt.fragments.PeopleFragment
+import com.project.proabt.setting.SettingActivity
 import com.project.proabt.utils.SearchViewModel
 
 
@@ -53,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         )
-        val myActionMenuItem = menu!!.findItem(R.id.search)
+        val myActionMenuItem = menu.findItem(R.id.search)
         searchView = myActionMenuItem!!.actionView as SearchView
         searchView.setIconifiedByDefault(true)
         searchView.isIconified = true

@@ -36,15 +36,15 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".SettingActivity">
+        <activity android:name=".setting.SettingActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.project.proabt.MainActivity" />
         </activity>
-        <activity android:name=".ShowRatingActivity">
+        <activity android:name=".setting.ShowRatingActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.project.proabt.SettingActivity" />
+                android:value="com.project.proabt.setting.SettingActivity" />
         </activity>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

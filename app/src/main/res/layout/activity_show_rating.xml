@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ShowRatingActivity">
-
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -19,8 +18,17 @@
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
         app:title="Show Rating" />
-
+    <TextView
+        android:id="@+id/noRatingTv"
+        android:visibility="gone"
+        android:text="No user has rating till now"
+        android:textSize="26sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center"/>
     <LinearLayout
+        android:id="@+id/avgRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -70,9 +78,9 @@
         </LinearLayout>
     </LinearLayout>
     <View
+        android:id="@+id/profileSeparator"
         android:layout_marginTop="17dp"
         android:layout_gravity="center_horizontal"
-
         android:layout_width="370dp"
         android:layout_height="2dp"
         android:background="#d7d7d7"/>

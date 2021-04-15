@@ -152,6 +152,7 @@ class ReviewImageActivity : AppCompatActivity() {
         val inboxMap = Inbox(
             message.msg,
             friendId!!,
+            mCurrentUid,
             name!!,
             name!!.toUpperCase(),
             image!!,

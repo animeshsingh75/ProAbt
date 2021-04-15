@@ -15,7 +15,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.project.proabt.R
-import com.project.proabt.SettingActivity
 import com.project.proabt.databinding.ActivityReviewProfileBinding
 import com.project.proabt.models.User
 import com.squareup.picasso.Picasso

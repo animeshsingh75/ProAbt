@@ -6,6 +6,7 @@ import java.util.*
 data class Inbox(
     val msg: String,
     var from: String,
+    var to:String,
     var name: String,
     var upper_name:String,
     var image: String,
@@ -13,5 +14,5 @@ data class Inbox(
     var count: Int = 0,
     val type: String="TEXT"
 ) {
-    constructor() : this("", "", "", "", "",Date(), 0,"")
+    constructor() : this("", "","", "", "", "",Date(), 0,"")
 }

@@ -438,7 +438,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun updateLastMessage(message: Message, type: String) {
-        val inboxMap = Inbox(message.msg,friendId!!,name!!,name!!.toUpperCase(),image!!,count = 0,type = type)
+        val inboxMap = Inbox(message.msg,friendId!!,mCurrentUid,name!!,name!!.toUpperCase(),image!!,count = 0,type = type)
         getInbox(mCurrentUid, friendId!!).setValue(inboxMap).addOnSuccessListener {
             getInbox(friendId!!, mCurrentUid).addListenerForSingleValueEvent(object :
                 ValueEventListener {
@@ -447,6 +447,7 @@ class ChatActivity : AppCompatActivity() {
                     inboxMap.apply {
                         from = message.senderId
                         name = currentUser.name
+                        upper_name=currentUser.name.toUpperCase()
                         image = currentUser.thumbImage
                         count = 1
                     }
@@ -478,6 +479,7 @@ class ChatActivity : AppCompatActivity() {
                     val inboxMap = Inbox(
                         "",
                         friendId!!,
+                        mCurrentUid,
                         name!!,
                         name!!.toUpperCase(),
                         image!!,

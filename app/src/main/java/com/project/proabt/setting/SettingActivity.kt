@@ -1,7 +1,8 @@
-package com.project.proabt
+package com.project.proabt.setting
 
 import android.Manifest
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -21,10 +22,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.project.proabt.MainActivity
+import com.project.proabt.R
 import com.project.proabt.auth.LoginActivity
 import com.project.proabt.databinding.ActivitySettingBinding
 import com.project.proabt.models.User
-import com.project.proabt.setting.ProfileCameraActivity
 import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -36,6 +38,7 @@ class SettingActivity : AppCompatActivity() {
     lateinit var currentUser: User
     lateinit var downloadUrl: String
     lateinit var thumbnailUrl: String
+    private lateinit var progressDialog: ProgressDialog
     val mCurrentUid by lazy {
         FirebaseAuth.getInstance().uid!!
     }
@@ -63,6 +66,9 @@ class SettingActivity : AppCompatActivity() {
         binding.userImgView.setOnClickListener {
             Log.d("Clicked", "Clicked")
             showPopup(it)
+        }
+        binding.account.setOnClickListener {
+            startActivity(Intent(this,EditProfActivity::class.java))
         }
         binding.logout.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
@@ -137,6 +143,8 @@ class SettingActivity : AppCompatActivity() {
             val result = CropImage.getActivityResult(data)
             if (resultCode == RESULT_OK) {
                 binding.userImgView.setImageURI(result.uri)
+                progressDialog = createProgressDialog("Sending a photo. Please wait", false)
+                progressDialog.show()
                 uploadImage(result.uri)
             }
         }
@@ -199,6 +207,13 @@ class SettingActivity : AppCompatActivity() {
             }
         }
 
+    }
+    fun Context.createProgressDialog(message: String, isCancelable: Boolean): ProgressDialog {
+        return ProgressDialog(this).apply {
+            setCancelable(isCancelable)
+            setCanceledOnTouchOutside(false)
+            setMessage(message)
+        }
     }
 }
 
