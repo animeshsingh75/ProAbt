@@ -1,0 +1,15 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:gravity="center"
+        android:drawable="@drawable/ic_circle_icon"
+
+        />
+    <item
+        android:top="5dp"
+        android:left="3dp"
+        android:gravity="center"
+        android:drawable="@drawable/ic_mic_white"
+
+        />
+
+</layer-list>

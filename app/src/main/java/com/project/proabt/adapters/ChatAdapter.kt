@@ -16,27 +16,25 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
-import com.project.proabt.IMAGE
-import com.project.proabt.NAME
-import com.project.proabt.R
-import com.project.proabt.UID
+import com.project.proabt.*
 import com.project.proabt.attachment_types.ViewImageActivity
 import com.project.proabt.models.ChatEvent
 import com.project.proabt.models.DateHeader
 import com.project.proabt.models.Message
 import com.project.proabt.utils.formatAsTime
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.*
 
 
 class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrentUid: String) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>(), Runnable {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var highFiveClick: ((id: String, status: Boolean) -> Unit)? = null
-    var mediaPlayer: MediaPlayer? = null
     var wasPlaying = false
-    var isPaused=false
-    lateinit var seekBar: SeekBar
-    lateinit var playbtn: ImageView
+    var isPaused = false
     lateinit var context: Context
+    lateinit var updateSeekbar: Job
+    lateinit var holderList:HashMap<Int,RecyclerView.ViewHolder>
+    var previousPosition: Int = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflate = { layout: Int ->
             LayoutInflater.from(parent.context).inflate(layout, parent, false)
@@ -230,44 +228,12 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
                     AUDIO_MESSAGE_RECEIVED -> {
                         val messageCardView =
                             holder.itemView.findViewById<MaterialCardView>(R.id.messageCardView)
-                        seekBar = holder.itemView.findViewById(R.id.seekbar)
-                        val durationTv = holder.itemView.findViewById<TextView>(R.id.durationTv)
-                        playbtn = holder.itemView.findViewById(R.id.playbtn)
-                        durationTv.text = item.duration
-                        context=holder.itemView.context
                         val highFiveImg = holder.itemView.findViewById<ImageView>(R.id.highFiveImg)
-                        playbtn.setOnClickListener {
-                            Log.d("Clicked","Clicked")
-                            playSong(item.msg,context)
-                        }
-                        seekBar.setOnSeekBarChangeListener(object :
-                            SeekBar.OnSeekBarChangeListener {
-                            override fun onStartTrackingTouch(seekBar: SeekBar) {
-                            }
-                            override fun onProgressChanged(
-                                seekBar: SeekBar,
-                                progress: Int,
-                                fromTouch: Boolean
-                            ) {
-                                if (progress > 0 && mediaPlayer != null && !mediaPlayer!!.isPlaying && !isPaused) {
-                                    Log.d("Status", "Completed")
-                                    clearMediaPlayer()
-                                    playbtn.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            context,
-                                            R.drawable.ic_play_arrow_24
-                                        )
-                                    )
-                                    seekBar.progress = 0
-                                    wasPlaying = false
-                                }
-                            }
-                            override fun onStopTrackingTouch(seekBar: SeekBar) {
-                                if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-                                    mediaPlayer!!.seekTo(seekBar.progress)
-                                }
-                            }
-                        })
+                        val seekBar = holder.itemView.findViewById<SeekBar>(R.id.seekBar)
+                        val durationTv = holder.itemView.findViewById<TextView>(R.id.durationTv)
+                        durationTv.text = item.duration
+                        val playbtn = holder.itemView.findViewById<ImageView>(R.id.playbtn)
+                        context = holder.itemView.context
                         messageCardView.setOnClickListener(object :
                             DoubleClickListener() {
                             override fun onDoubleClick(v: View?) {
@@ -281,43 +247,271 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
                                 highFiveClick?.invoke(item.msgId, !isSelected)
                             }
                         }
-                    }
-                    AUDIO_MESSAGE_SENT->{
-                        val highFiveImg = holder.itemView.findViewById<ImageView>(R.id.highFiveImg)
-                        highFiveImg.apply {
-                            isVisible = item.liked
-                        }
-                        seekBar = holder.itemView.findViewById(R.id.seekBar)
-                        val durationTv = holder.itemView.findViewById<TextView>(R.id.durationTv)
-                        playbtn = holder.itemView.findViewById(R.id.playbtn)
-                        durationTv.text = item.duration
-                        context=holder.itemView.context
                         playbtn.setOnClickListener {
-                            Log.d("Clicked","Clicked")
-                            playSong(item.msg,context)
+                            if(previousPosition!=position &&previousPosition!=0){
+                                Log.d("Status1","Changed Position")
+                                val previousHolder=holderList[previousPosition]
+                                val view=previousHolder!!.itemView
+                                val previousSeekBar=view.findViewById<SeekBar>(R.id.seekBar)
+                                val previousPlaybtn=view.findViewById<ImageView>(R.id.playbtn)
+                                previousPlaybtn.setImageDrawable(
+                                    ContextCompat.getDrawable(
+                                        context,
+                                        R.drawable.ic_play
+                                    )
+                                )
+                                previousSeekBar.progress=0
+                                Log.d("Status1", item.msg)
+                                clearMediaPlayer()
+                                mediaPlayer= MediaPlayer()
+                                playbtn.setImageDrawable(
+                                    ContextCompat.getDrawable(
+                                        context,
+                                        R.drawable.ic_pause
+                                    )
+                                )
+                                mediaPlayer!!.setDataSource(item.msg)
+                                mediaPlayer!!.prepare()
+                                mediaPlayer!!.start()
+                                mediaPlayer!!.isLooping = false
+                                updateSeekbar.cancel()
+                                updateSeekbar.start()
+                                seekBar.max = mediaPlayer!!.duration
+                                previousPosition=position
+                                holderList.clear()
+                                holderList[position]=holder
+                            }else{
+                                if (mediaPlayer != null && !isPaused) {
+                                    wasPlaying = true
+                                    mediaPlayer!!.pause()
+                                    isPaused = true
+                                    playbtn.setImageDrawable(
+                                        ContextCompat.getDrawable(
+                                            context,
+                                            R.drawable.ic_play
+                                        )
+                                    )
+                                    Log.d("Status1", "Paused")
+                                } else if (!wasPlaying) {
+                                    Log.d("Status1", "Started")
+                                    if (mediaPlayer == null) {
+                                        mediaPlayer = MediaPlayer()
+                                    }
+                                    playbtn.setImageDrawable(
+                                        ContextCompat.getDrawable(
+                                            context,
+                                            R.drawable.ic_pause
+                                        )
+                                    )
+                                    mediaPlayer!!.setDataSource(item.msg)
+                                    mediaPlayer!!.prepare()
+                                    mediaPlayer!!.isLooping = false
+                                    seekBar.max = mediaPlayer!!.duration
+                                    previousPosition=position
+                                    holderList= HashMap()
+                                    holderList[previousPosition] = holder
+                                    Log.d("Status1",previousPosition.toString())
+                                    mediaPlayer!!.start()
+                                } else {
+                                    wasPlaying = true
+                                    mediaPlayer!!.start()
+                                    isPaused = false
+                                    playbtn.setImageDrawable(
+                                        ContextCompat.getDrawable(
+                                            context,
+                                            R.drawable.ic_pause
+                                        )
+                                    )
+                                    Log.d("Status1", "Played")
+                                }
+                            }
+                            updateSeekbar = GlobalScope.launch(Dispatchers.IO) {
+                                var currentPosition = mediaPlayer!!.currentPosition
+                                val total = mediaPlayer!!.duration
+                                while (mediaPlayer != null && !isPaused && currentPosition < total) {
+                                    Log.d("Status1", "Updated")
+                                    currentPosition =
+                                        mediaPlayer!!.currentPosition
+                                    withContext(Dispatchers.Main) {
+                                        seekBar.progress = currentPosition
+                                    }
+                                }
+                                suspend {
+                                    delay((mediaPlayer!!.duration / 100).toLong())
+                                }
+
+                            }
                         }
+
                         seekBar.setOnSeekBarChangeListener(object :
                             SeekBar.OnSeekBarChangeListener {
                             override fun onStartTrackingTouch(seekBar: SeekBar) {
                             }
+
                             override fun onProgressChanged(
                                 seekBar: SeekBar,
                                 progress: Int,
                                 fromTouch: Boolean
                             ) {
-                                if (progress > 0 && mediaPlayer != null && !mediaPlayer!!.isPlaying && !isPaused) {
-                                    Log.d("Status", "Completed")
+                                if (mediaPlayer != null && progress == mediaPlayer!!.duration && !isPaused) {
+                                    Log.d("Status1", "Completed")
                                     clearMediaPlayer()
+                                    Log.d("Status1",holderList.toString())
+                                    holderList.clear()
+                                    Log.d("Status1",holderList.toString())
+                                    previousPosition=0
+                                    wasPlaying = false
+                                    seekBar.progress = 0
                                     playbtn.setImageDrawable(
                                         ContextCompat.getDrawable(
                                             context,
-                                            R.drawable.ic_play_arrow_24
+                                            R.drawable.ic_play
                                         )
                                     )
-                                    seekBar.progress = 0
-                                    wasPlaying = false
                                 }
                             }
+
+                            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                                if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+                                    mediaPlayer!!.seekTo(seekBar.progress)
+                                }
+                            }
+                        })
+                    }
+                    AUDIO_MESSAGE_SENT -> {
+                        val highFiveImg = holder.itemView.findViewById<ImageView>(R.id.highFiveImg)
+                        highFiveImg.apply {
+                            isVisible = item.liked
+                        }
+                        val seekBar = holder.itemView.findViewById<SeekBar>(R.id.seekBar)
+                        val durationTv = holder.itemView.findViewById<TextView>(R.id.durationTv)
+                        durationTv.text = item.duration
+                        val playbtn = holder.itemView.findViewById<ImageView>(R.id.playbtn)
+                        context = holder.itemView.context
+                        playbtn.setOnClickListener {
+                            if(previousPosition!=position &&previousPosition!=0){
+                                Log.d("Status1","Changed Position")
+                                val previousHolder=holderList[previousPosition]
+                                val view=previousHolder!!.itemView
+                                val previousSeekBar=view.findViewById<SeekBar>(R.id.seekBar)
+                                val previousPlaybtn=view.findViewById<ImageView>(R.id.playbtn)
+                                previousPlaybtn.setImageDrawable(
+                                    ContextCompat.getDrawable(
+                                        context,
+                                        R.drawable.ic_play
+                                    )
+                                )
+                                previousSeekBar.progress=0
+                                Log.d("Status1", item.msg)
+                                clearMediaPlayer()
+                                mediaPlayer= MediaPlayer()
+                                playbtn.setImageDrawable(
+                                    ContextCompat.getDrawable(
+                                        context,
+                                        R.drawable.ic_pause
+                                    )
+                                )
+                                mediaPlayer!!.setDataSource(item.msg)
+                                mediaPlayer!!.prepare()
+                                mediaPlayer!!.start()
+                                mediaPlayer!!.isLooping = false
+                                updateSeekbar.cancel()
+                                updateSeekbar.start()
+                                seekBar.max = mediaPlayer!!.duration
+                                previousPosition=position
+                                holderList.clear()
+                                holderList[position]=holder
+                            }else{
+                                if (mediaPlayer != null && !isPaused) {
+                                    wasPlaying = true
+                                    mediaPlayer!!.pause()
+                                    isPaused = true
+                                    playbtn.setImageDrawable(
+                                        ContextCompat.getDrawable(
+                                            context,
+                                            R.drawable.ic_play
+                                        )
+                                    )
+                                    Log.d("Status1", "Paused")
+                                } else if (!wasPlaying) {
+                                    Log.d("Status1", "Started")
+                                    if (mediaPlayer == null) {
+                                        mediaPlayer = MediaPlayer()
+                                    }
+                                    playbtn.setImageDrawable(
+                                        ContextCompat.getDrawable(
+                                            context,
+                                            R.drawable.ic_pause
+                                        )
+                                    )
+                                    mediaPlayer!!.setDataSource(item.msg)
+                                    mediaPlayer!!.prepare()
+                                    mediaPlayer!!.isLooping = false
+                                    seekBar.max = mediaPlayer!!.duration
+                                    previousPosition=position
+                                    holderList= HashMap()
+                                    holderList[previousPosition] = holder
+                                    Log.d("Status1",previousPosition.toString())
+                                    mediaPlayer!!.start()
+                                } else {
+                                    wasPlaying = true
+                                    mediaPlayer!!.start()
+                                    isPaused = false
+                                    playbtn.setImageDrawable(
+                                        ContextCompat.getDrawable(
+                                            context,
+                                            R.drawable.ic_pause
+                                        )
+                                    )
+                                    Log.d("Status1", "Played")
+                                }
+                            }
+                            updateSeekbar = GlobalScope.launch(Dispatchers.IO) {
+                                var currentPosition = mediaPlayer!!.currentPosition
+                                val total = mediaPlayer!!.duration
+                                while (mediaPlayer != null && !isPaused && currentPosition < total) {
+                                    Log.d("Status1", "Updated")
+                                    currentPosition =
+                                        mediaPlayer!!.currentPosition
+                                    withContext(Dispatchers.Main) {
+                                        seekBar.progress = currentPosition
+                                    }
+                                }
+                                suspend {
+                                    delay((mediaPlayer!!.duration / 100).toLong())
+                                }
+
+                            }
+                        }
+
+                        seekBar.setOnSeekBarChangeListener(object :
+                            SeekBar.OnSeekBarChangeListener {
+                            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                            }
+
+                            override fun onProgressChanged(
+                                seekBar: SeekBar,
+                                progress: Int,
+                                fromTouch: Boolean
+                            ) {
+                                if (mediaPlayer != null && progress == mediaPlayer!!.duration && !isPaused) {
+                                    Log.d("Status1", "Completed")
+                                    clearMediaPlayer()
+                                    Log.d("Status1",holderList.toString())
+                                    holderList.clear()
+                                    Log.d("Status1",holderList.toString())
+                                    previousPosition=0
+                                    wasPlaying = false
+                                    seekBar.progress = 0
+                                    playbtn.setImageDrawable(
+                                        ContextCompat.getDrawable(
+                                            context,
+                                            R.drawable.ic_play
+                                        )
+                                    )
+                                }
+                            }
+
                             override fun onStopTrackingTouch(seekBar: SeekBar) {
                                 if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                                     mediaPlayer!!.seekTo(seekBar.progress)
@@ -328,57 +522,6 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
 
                 }
             }
-        }
-    }
-
-    private fun playSong(path:String,context:Context) {
-        try {
-            Log.d("Status","Started")
-            if (mediaPlayer != null && !isPaused) {
-                wasPlaying = true
-                mediaPlayer!!.pause()
-                isPaused=true
-                playbtn.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_play_arrow_24))
-                Log.d("Status", "Paused")
-            }
-            else if (!wasPlaying) {
-                Log.d("Status", "Started")
-                if (mediaPlayer == null) {
-                    mediaPlayer = MediaPlayer()
-                }
-                playbtn.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_pause_24))
-                mediaPlayer!!.setDataSource(path)
-                mediaPlayer!!.prepare()
-                mediaPlayer!!.isLooping = false
-                seekBar.max = mediaPlayer!!.duration
-                mediaPlayer!!.start()
-            }
-            else{
-                wasPlaying = true
-                mediaPlayer!!.start()
-                isPaused=false
-                playbtn.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_pause_24))
-                Log.d("Status", "Played")
-            }
-            Thread(this).start()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-    override fun run() {
-        var currentPosition = mediaPlayer!!.currentPosition
-        val total = mediaPlayer!!.duration
-        while (mediaPlayer != null && !isPaused && currentPosition < total) {
-            currentPosition = try {
-                Log.d("Status","Updated")
-                Thread.sleep(1000)
-                mediaPlayer!!.currentPosition
-            } catch (e: InterruptedException) {
-                return
-            } catch (e: Exception) {
-                return
-            }
-            seekBar.progress = currentPosition
         }
     }
     private fun clearMediaPlayer() {

@@ -48,7 +48,7 @@
         android:id="@+id/swipeToLoad"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/inputBox"
+        android:layout_above="@+id/sendLayout"
         android:layout_below="@+id/toolbar">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/msgRv"
@@ -62,7 +62,7 @@
         android:id="@+id/layout_actions_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/inputBox"
+        android:layout_above="@+id/sendLayout"
         android:focusableInTouchMode="true"
         android:gravity="bottom"
         android:visibility="gone">
@@ -245,16 +245,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="" />
-
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </RelativeLayout>
 
-
-    <RelativeLayout
-        android:id="@+id/inputBox"
+    <FrameLayout
+        android:id="@+id/sendLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -262,75 +260,145 @@
         android:paddingTop="5dp"
         android:paddingEnd="5dp"
         android:paddingBottom="5dp">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView"
+        <RelativeLayout
+            android:id="@+id/inputBox"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_toStartOf="@+id/sendBtn"
-            app:cardCornerRadius="30dp">
+            android:layout_height="wrap_content">
 
-            <RelativeLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCardView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_toStartOf="@+id/sendBtn"
+                app:cardCornerRadius="30dp">
 
-                <ImageView
-                    android:id="@+id/smileBtn"
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_chat_icons_smile" />
-
-                <com.vanniktech.emoji.EmojiEditText
-                    android:id="@+id/msgEdTv"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="11dp"
-                    android:layout_marginEnd="45dp"
-                    android:layout_toEndOf="@+id/smileBtn"
-                    android:background="@android:color/white"
-                    android:gravity="top|start"
-                    android:hint="Type your message"
-                    android:imeOptions="actionGo"
-                    android:inputType="textMultiLine|textLongMessage|text"
-                    android:lineSpacingExtra="5dp"
-                    android:maxHeight="120dp"
-                    android:maxLength="700"
-                    android:paddingTop="18dp"
-                    android:paddingBottom="18dp"
-                    android:singleLine="false"
-                    android:textColorHint="#b6b6b6"
-                    android:textSize="14sp" />
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/smileBtn"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/ic_chat_icons_smile" />
 
+                    <com.vanniktech.emoji.EmojiEditText
+                        android:id="@+id/msgEdTv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="11dp"
+                        android:layout_marginEnd="45dp"
+                        android:layout_toEndOf="@+id/smileBtn"
+                        android:background="@android:color/white"
+                        android:gravity="top|start"
+                        android:hint="Type your message"
+                        android:imeOptions="actionGo"
+                        android:inputType="textMultiLine|textLongMessage|text"
+                        android:lineSpacingExtra="5dp"
+                        android:maxHeight="120dp"
+                        android:maxLength="700"
+                        android:paddingTop="18dp"
+                        android:paddingBottom="18dp"
+                        android:singleLine="false"
+                        android:textColorHint="#b6b6b6"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:id="@+id/attachment"
+                        android:layout_width="26dp"
+                        android:layout_height="42dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_toStartOf="@+id/msgEdTv"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:rotation="-45"
+                        android:src="@drawable/ic_attachment" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <ImageView
+                android:id="@+id/sendBtn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/chat_icon" />
+            <ImageView
+                android:id="@+id/micBtn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_mic" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/recordAudio"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCardView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/purple_700"
+                android:layout_marginBottom="2dp"
+                app:cardCornerRadius="30dp">
                 <ImageView
-                    android:id="@+id/attachment"
-                    android:layout_width="26dp"
-                    android:layout_height="42dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_toStartOf="@+id/msgEdTv"
+                    android:id="@+id/deleteAudio"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_trash_can"
+                    android:layout_marginBottom="9dp"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/recLogo"
+                        android:layout_marginTop="2dp"
+                        android:visibility="invisible"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/rec_circle_icon"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"/>
+                    <TextView
+                        android:id="@+id/timeTv"
+                        android:gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0:00"
+                        android:textSize="16sp"
+                        android:textColor="#FFFFFF"/>
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/sendAudioBtn"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginRight="20dp"
+                    android:textSize="18sp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:rotation="-45"
-                    android:src="@drawable/ic_attachment" />
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <ImageView
-            android:id="@+id/sendBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/chat_icon" />
-    </RelativeLayout>
-
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:text="Send"/>
+            </com.google.android.material.card.MaterialCardView>
+        </RelativeLayout>
+    </FrameLayout>
 </RelativeLayout>

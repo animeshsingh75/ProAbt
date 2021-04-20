@@ -64,9 +64,9 @@
                     android:layout_toEndOf="@+id/logotime"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_play_arrow_24"/>
+                    android:src="@drawable/ic_play"/>
                 <SeekBar
-                    android:id="@+id/seekbar"
+                    android:id="@+id/seekBar"
                     android:progressTint="@color/teal_200"
                     android:thumbTint="@color/purple_500"
                     android:progressBackgroundTint="@color/notification_default"

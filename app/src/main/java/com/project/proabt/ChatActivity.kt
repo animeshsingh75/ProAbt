@@ -2,18 +2,26 @@ package com.project.proabt
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
+import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,12 +49,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
+import java.util.*
 
 
 const val UID = "uid"
 const val NAME = "name"
 const val IMAGE = "photo"
 
+var mediaPlayer:MediaPlayer?=null
 class ChatActivity : AppCompatActivity() {
     lateinit var binding: ActivityChatBinding
     private val friendId by lazy {
@@ -73,8 +84,15 @@ class ChatActivity : AppCompatActivity() {
     }
     private var backclicked: Boolean = false
     private var attachmentclick: Boolean = false
+    var mediaRecorder: MediaRecorder? = null
     private lateinit var progressDialog: ProgressDialog
+    lateinit var recordFile: String
     lateinit var downloadUrl: String
+    lateinit var countDownTimer: CountDownTimer
+    lateinit var filePath: String
+    var second = -1
+    var minute = 0
+    var blink = false
     private val messages = mutableListOf<ChatEvent>()
     lateinit var chatAdapter: ChatAdapter
     lateinit var currentUser: User
@@ -83,14 +101,15 @@ class ChatActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.chat_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id=item.itemId
 
-        when(id){
-            R.id.rateUser->{
-                val intent=Intent(this,RateUserActivity::class.java)
-                intent.putExtra(NAME,name)
-                intent.putExtra(UID,friendId)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+
+        when (id) {
+            R.id.rateUser -> {
+                val intent = Intent(this, RateUserActivity::class.java)
+                intent.putExtra(NAME, name)
+                intent.putExtra(UID, friendId)
                 startActivity(intent)
             }
         }
@@ -104,17 +123,62 @@ class ChatActivity : AppCompatActivity() {
         keyboardVisibilityHelper = KeyboardVisibilityUtil(binding.rootView) {
             binding.msgRv.scrollToPosition(messages.size - 1)
         }
-        Log.d("Messages","${messages.count()}")
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener {
             checkInitialMessage()
+            mediaPlayer!!.stop()
+            mediaPlayer!!.release()
+            mediaPlayer=null
         }
         FirebaseFirestore.getInstance().collection("users").document(mCurrentUid).get()
             .addOnSuccessListener {
                 currentUser = it.toObject(User::class.java)!!
             }
+        Log.d(
+            "MicBtn",
+            "${binding.msgEdTv.text.isNullOrEmpty() || binding.msgEdTv.text.isNullOrBlank()}"
+        )
+        binding.msgEdTv.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                Log.d("Text", s.toString())
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (count == 0) {
+                    binding.micBtn.isVisible = true
+                } else {
+                    binding.micBtn.isVisible = false
+                    binding.sendBtn.isVisible = true
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
+        binding.sendAudioBtn.setOnClickListener {
+            Log.d("Clicked", "Clicked")
+            binding.inputBox.isVisible = true
+            binding.recordAudio.isVisible = false
+            countDownTimer.cancel()
+            sendAudio()
+        }
+        binding.micBtn.setOnClickListener {
+            Log.d("MicBtn", "Clicked")
+            binding.layoutActionsContainer.isVisible = false
+            attachmentclick = false
+            askAudioPermission()
+            binding.inputBox.isVisible = false
+            binding.recordAudio.isVisible = true
+        }
+        binding.deleteAudio.setOnClickListener {
+            binding.inputBox.isVisible = true
+            binding.recordAudio.isVisible = false
+            countDownTimer.cancel()
+            stopRecording()
+        }
         chatAdapter = ChatAdapter(messages, mCurrentUid)
         binding.msgRv.apply {
             layoutManager = LinearLayoutManager(this@ChatActivity)
@@ -197,6 +261,13 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         checkInitialMessage()
+        Log.d("Detached","Detached")
+        if(mediaPlayer!=null){
+            Log.d("Detached","Detached")
+            mediaPlayer!!.stop()
+            mediaPlayer!!.release()
+            mediaPlayer=null
+        }
     }
 
     private fun pickImageFromGallery() {
@@ -215,6 +286,74 @@ class ChatActivity : AppCompatActivity() {
             intent,
             1002
         )
+    }
+
+    private fun startRecording() {
+        Log.d("Recording", "Started Recording")
+        val recordPath = this.getExternalFilesDir("/")!!.absolutePath
+        recordFile = System.currentTimeMillis().toString() + ".mpeg"
+        filePath = "$recordPath/$recordFile"
+        mediaRecorder = MediaRecorder()
+        showTimer()
+        mediaRecorder?.apply {
+            setAudioSource(MediaRecorder.AudioSource.MIC)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setOutputFile("$recordPath/$recordFile")
+            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            prepare()
+            start()
+        }
+    }
+
+    private fun stopRecording() {
+        mediaRecorder?.apply {
+            stop()
+            release()
+        }
+        val file = File(filePath)
+        file.delete()
+        mediaRecorder = null
+    }
+
+    private fun sendAudio() {
+        mediaRecorder?.apply {
+            stop()
+            release()
+        }
+        mediaRecorder = null
+        val savedUri = Uri.fromFile(File(filePath))
+        progressDialog = createProgressDialog("Sending a Audio. Please wait", false)
+        progressDialog.show()
+        uploadAudio(savedUri, binding.timeTv.text.toString())
+    }
+
+    private fun askAudioPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.RECORD_AUDIO),
+            1002
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == 1002) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startRecording()
+            } else {
+                AlertDialog.Builder(this)
+                    .setTitle("Permission Error")
+                    .setMessage("Audio Permission not provided")
+                    .setPositiveButton("OK") { _, _ -> finish() }
+                    .setCancelable(false)
+                    .show()
+            }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun pickDocument() {
@@ -316,6 +455,45 @@ class ChatActivity : AppCompatActivity() {
         }.addOnFailureListener {
 
         }
+    }
+
+    fun showTimer() {
+        second = 0
+        minute = 0
+        countDownTimer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                second++
+                binding.timeTv.text = recorderTime()
+                if (minute == 10) {
+                    Toast.makeText(
+                        this@ChatActivity,
+                        "Cannot record for more than 9:59 mins",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    countDownTimer.cancel()
+                    binding.inputBox.isVisible = true
+                    binding.recordAudio.isVisible = false
+                }
+            }
+
+            override fun onFinish() {}
+        }
+        countDownTimer.start()
+    }
+
+    fun recorderTime(): String? {
+        if (second === 60) {
+            minute++
+            second = 0
+        }
+        if (blink) {
+            binding.recLogo.visibility = View.INVISIBLE
+            blink = !blink
+        } else {
+            binding.recLogo.visibility = View.VISIBLE
+            blink = !blink
+        }
+        return java.lang.String.format("%01d:%02d", minute, second)
     }
 
     private fun getDuration(path: String): String? {
@@ -438,7 +616,16 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun updateLastMessage(message: Message, type: String) {
-        val inboxMap = Inbox(message.msg,friendId!!,mCurrentUid,name!!,name!!.toUpperCase(),image!!,count = 0,type = type)
+        val inboxMap = Inbox(
+            message.msg,
+            friendId!!,
+            mCurrentUid,
+            name!!,
+            name!!.toUpperCase(),
+            image!!,
+            count = 0,
+            type = type
+        )
         getInbox(mCurrentUid, friendId!!).setValue(inboxMap).addOnSuccessListener {
             getInbox(friendId!!, mCurrentUid).addListenerForSingleValueEvent(object :
                 ValueEventListener {
@@ -447,7 +634,7 @@ class ChatActivity : AppCompatActivity() {
                     inboxMap.apply {
                         from = message.senderId
                         name = currentUser.name
-                        upper_name=currentUser.name.toUpperCase()
+                        upper_name = currentUser.name.toUpperCase()
                         image = currentUser.thumbImage
                         count = 1
                     }
