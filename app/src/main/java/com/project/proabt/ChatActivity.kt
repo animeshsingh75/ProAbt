@@ -35,6 +35,7 @@ import com.google.firebase.storage.UploadTask
 import com.project.proabt.adapters.ChatAdapter
 import com.project.proabt.attachment_types.CameraActivity
 import com.project.proabt.attachment_types.ReviewImageActivity
+import com.project.proabt.attachment_types.ReviewVideoActivity
 import com.project.proabt.databinding.ActivityChatBinding
 import com.project.proabt.models.*
 import com.project.proabt.utils.KeyboardVisibilityUtil
@@ -230,6 +231,12 @@ class ChatActivity : AppCompatActivity() {
         binding.btnDoc.setOnClickListener {
             pickDocument()
         }
+        binding.btnVideo.setOnClickListener{
+            pickVideo()
+        }
+        binding.btnVideoButton.setOnClickListener {
+            pickVideo()
+        }
         binding.swipeToLoad.setOnRefreshListener {
             val workerScope = CoroutineScope(Dispatchers.Main)
             workerScope.launch {
@@ -278,7 +285,14 @@ class ChatActivity : AppCompatActivity() {
             1000
         )
     }
-
+    private fun pickVideo(){
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "video/*"
+        startActivityForResult(
+            intent,
+            1003
+        )
+    }
     private fun pickAudio() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "audio/*"
@@ -412,6 +426,19 @@ class ChatActivity : AppCompatActivity() {
             val duration = getDuration(audioPath)
             Log.d("AUDIOURI", duration.toString())
             uploadAudio(audiouri, duration.toString())
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == 1003) {
+            val videoUri = data?.data
+            Log.d("SENTVIDEO", "URI:${videoUri.toString()}")
+            val videoPath = PathUtils.getPath(videoUri!!, this)
+            Log.d("SENTVIDEO", videoPath!!)
+            val intent = Intent(this, ReviewVideoActivity::class.java)
+            intent.putExtra("VideoPath", videoPath)
+            intent.putExtra(UID, friendId)
+            intent.putExtra(NAME, name)
+            intent.putExtra(IMAGE, image)
+            intent.putExtra("SENTVIDEO", videoUri.toString())
+            startActivity(intent)
         }
     }
 

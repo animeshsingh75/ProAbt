@@ -4,37 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="30dp"
+    android:layout_marginEnd="30dp"
     android:paddingStart="16dp"
     android:paddingTop="4dp"
     android:paddingEnd="16dp"
     android:paddingBottom="4dp">
 
-    <ImageView
-        android:id="@+id/highFiveImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/like_message"
-        android:src="@drawable/ic_high_five_inverted"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/materialCardView" />
-
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardView"
+        android:id="@+id/messageCardView"
         android:layout_width="300dp"
         android:layout_height="315dp"
         android:elevation="0dp"
-        app:cardBackgroundColor="@color/purple_500"
+        app:cardBackgroundColor="#f3f3f3"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearance="@style/ChatShapeAppearance">
+        app:shapeAppearance="@style/CustomMediumShapeAppearance">
 
         <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="300dp"
+            android:layout_height="315dp"
             android:padding="5dp"
             app:alignItems="flex_end"
             app:flexWrap="wrap"
@@ -49,23 +38,44 @@
                     android:layout_width="275dp"
                     android:layout_height="272dp"
                     android:adjustViewBounds="true"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_splash_activity"
                     app:shapeAppearanceOverlay="@style/RoundedChatImageViewSent" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/playBtn"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/btn_play_translucent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_play_white" />
 
                 <TextView
                     android:id="@+id/time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="227dp"
-                    android:layout_marginTop="278dp"
-                    android:textColor="#A6ffffff"
+                    android:layout_marginTop="281dp"
+                    android:textColor="#858585"
                     android:textSize="12sp"
                     tools:text="12:00AM" />
             </FrameLayout>
-
-
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.material.card.MaterialCardView>
 
+    <ImageView
+        android:id="@+id/highFiveImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/like_message"
+        android:focusable="true"
+        android:src="@drawable/high_five"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/messageCardView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

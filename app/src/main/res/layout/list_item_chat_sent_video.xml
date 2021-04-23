@@ -43,16 +43,25 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/content"
                     android:layout_width="275dp"
                     android:layout_height="272dp"
                     android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:src="@drawable/ic_splash_activity"
+                    android:scaleType="fitXY"
                     app:shapeAppearanceOverlay="@style/RoundedChatImageViewSent" />
-
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/playBtn"
+                    android:layout_gravity="center"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_play_white"
+                    android:background="@drawable/btn_play_translucent"/>
                 <TextView
                     android:id="@+id/time"
                     android:layout_width="wrap_content"

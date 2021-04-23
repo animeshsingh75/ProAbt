@@ -64,8 +64,8 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/sendLayout"
         android:focusableInTouchMode="true"
-        android:gravity="bottom"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:gravity="bottom">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/layout_actions"
@@ -201,7 +201,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/empty1"
+                        android:id="@+id/btn_video"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -209,23 +209,25 @@
                         android:orientation="vertical">
 
                         <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/btn_video_button"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:adjustViewBounds="true"
                             android:clickable="true"
                             android:focusable="true"
+                            android:src="@drawable/ic_video"
                             android:scaleType="centerCrop"
                             app:shapeAppearanceOverlay="@style/RoundedImageViewSmall" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="" />
+                            android:text="Video" />
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/empty2"
+                        android:id="@+id/empty1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

@@ -40,6 +40,9 @@ class ChatViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
                 subtitleImage.setImageResource(R.drawable.ic_headphones_24)
                 subtitleImage.setColorFilter(R.color.black)
                 subtitleTv.text="Audio"
+            }else if(item.type=="VIDEO"){
+                subtitleImage.setImageResource(R.drawable.ic_videocam)
+                subtitleTv.text="Video"
             }
             else{
                 subtitleImage.isVisible=false

@@ -36,7 +36,7 @@ exports.sendNotification = functions.database.ref("/messages/{chatId}/{msgId}")
               const token=doc.data().deviceToken;
               const payload={
                 notification: {
-                  title: senderName+" sent you image",
+                  title: senderName+" sent you an image",
                   body: "Image",
                   image: msg,
                   clickAction: "MainActivity",
@@ -52,7 +52,7 @@ exports.sendNotification = functions.database.ref("/messages/{chatId}/{msgId}")
               const token=doc.data().deviceToken;
               const payload={
                 notification: {
-                  title: senderName+" sent you document",
+                  title: senderName+" sent you a document",
                   body: "PDF",
                   clickAction: "MainActivity",
                 },
@@ -67,8 +67,23 @@ exports.sendNotification = functions.database.ref("/messages/{chatId}/{msgId}")
               const token=doc.data().deviceToken;
               const payload={
                 notification: {
-                  title: senderName+" sent you audio",
+                  title: senderName+" sent you an audio",
                   body: "Audio",
+                  clickAction: "MainActivity",
+                },
+              };
+              return admin.messaging().sendToDevice(token, payload)
+                  .then((response)=>{
+                  });
+            });
+      } else if (type == "VIDEO") {
+        return admin.firestore().collection("users")
+            .doc(userId).get().then((doc) => {
+              const token=doc.data().deviceToken;
+              const payload={
+                notification: {
+                  title: senderName+" sent you a video",
+                  body: "Video",
                   clickAction: "MainActivity",
                 },
               };
