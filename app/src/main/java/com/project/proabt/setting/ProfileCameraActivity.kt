@@ -50,7 +50,7 @@ class ProfileCameraActivity : AppCompatActivity() {
                 val preview = Preview.Builder()
                     .build()
                     .also {
-                        it.setSurfaceProvider(binding.previewView.createSurfaceProvider())
+                        it.setSurfaceProvider(binding.previewView.surfaceProvider)
                     }
 
                 imageCapture = ImageCapture.Builder().build()

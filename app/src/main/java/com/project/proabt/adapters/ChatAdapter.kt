@@ -530,6 +530,7 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
                         })
                     }
                     VIDEO_MESSAGE_RECEIVED -> {
+                        context = holder.itemView.context
                         val content = holder.itemView.findViewById<ShapeableImageView>(R.id.content)
                         val playBtn = holder.itemView.findViewById<ShapeableImageView>(R.id.playBtn)
                         content.setOnClickListener { v ->
@@ -574,6 +575,7 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
                     VIDEO_MESSAGE_SENT -> {
                         val content = holder.itemView.findViewById<ShapeableImageView>(R.id.content)
                         val playBtn = holder.itemView.findViewById<ShapeableImageView>(R.id.playBtn)
+                        context = holder.itemView.context
                         content.setOnClickListener { v ->
                             val intent = Intent(v.context, ViewVideoActivity::class.java)
                             intent.putExtra(UID, mCurrentUid)

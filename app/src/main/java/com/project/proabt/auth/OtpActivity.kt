@@ -59,7 +59,7 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
         val span = SpannableString(getString(string.waiting_text, phoneNumber))
         val clickSpan: ClickableSpan = object : ClickableSpan() {
             override fun updateDrawState(ds: TextPaint) {
-                ds.color = ds.linkColor // you can use custom color
+                ds.color = ds.linkColor
                 ds.isUnderlineText = false
             }
 
@@ -252,6 +252,7 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun showSignUpActivity() {
         val intent = Intent(this, SignUpActivity::class.java)
+        intent.putExtra("ImageURI","")
         startActivity(intent)
         finish()
     }

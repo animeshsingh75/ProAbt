@@ -2,20 +2,23 @@ package com.project.proabt.auth
 
 import android.Manifest
 import android.app.Activity
+import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
@@ -35,6 +38,7 @@ class SignUpActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     lateinit var binding: ActivitySignUpBinding
     lateinit var downloadUrl: String
     lateinit var thumbnailUrl: String
+    private lateinit var progressDialog: ProgressDialog
     lateinit var skillsMap: List<String>
     var skills = arrayOf("C++", "C++", "C++")
     var size = 0
@@ -48,13 +52,22 @@ class SignUpActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     val database by lazy {
         FirebaseFirestore.getInstance()
     }
+    private val sentphoto by lazy {
+        Uri.parse(intent.getStringExtra("ImageURI"))
+    }
     lateinit var token: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.userImgView.setOnClickListener {
-            checkPermissionForImage()
+            showPopup(it)
+        }
+        val sentphotoString=sentphoto.toString()
+        if(sentphotoString.isNotEmpty()){
+            Log.d("SentPhoto",sentphoto.toString())
+            binding.userImgView.setImageURI(sentphoto)
+            uploadImage(sentphoto)
         }
         ArrayAdapter.createFromResource(
             this,
@@ -191,7 +204,27 @@ class SignUpActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             1000
         )
     }
-
+    private fun showPopup(anchorView: View) {
+        val layout = layoutInflater.inflate(R.layout.photo_selector, null)
+        val layoutInflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)
+        val popupWindow = PopupWindow(layout, ViewPager.LayoutParams.MATCH_PARENT, 900, true)
+        popupWindow.isOutsideTouchable = false
+        popupWindow.showAtLocation(layout, Gravity.BOTTOM, 70, 140)
+        popupWindow.isFocusable = true
+        val closeBtn = layout.findViewById<ImageView>(R.id.closeBtn)
+        val btn_camera_x_button = layout.findViewById<ShapeableImageView>(R.id.btn_camera_x_button)
+        val btn_gallery_button = layout.findViewById<ShapeableImageView>(R.id.btn_gallery_button)
+        closeBtn.setOnClickListener {
+            popupWindow.dismiss()
+        }
+        btn_gallery_button.setOnClickListener {
+            checkPermissionForImage()
+        }
+        btn_camera_x_button.setOnClickListener{
+            val intent = Intent(this, InitialProfileCameraActivity::class.java)
+            startActivity(intent)
+        }
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == 1000) {
@@ -201,6 +234,7 @@ class SignUpActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result = CropImage.getActivityResult(data)
             if (resultCode == RESULT_OK) {
+                Log.d("ImageResult",result.uri.toString())
                 binding.userImgView.setImageURI(result.uri)
                 uploadImage(result.uri)
             }
@@ -216,6 +250,8 @@ class SignUpActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     private fun uploadImage(it: Uri) {
+        progressDialog = createProgressDialog("Sending a photo. Please wait", false)
+        progressDialog.show()
         binding.nextBtn.isEnabled = false
         val ref = storage.reference.child("profile_pics/" + auth.uid.toString())
         val uploadTask = ref.putFile(it)
@@ -232,6 +268,7 @@ class SignUpActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 downloadUrl = task.result.toString()
                 Log.d("URL", "downloadUrl: $downloadUrl")
             }
+            progressDialog.dismiss()
         }.addOnFailureListener {
 
         }
@@ -269,5 +306,12 @@ class SignUpActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
         TODO("Not yet implemented")
+    }
+    fun Context.createProgressDialog(message: String, isCancelable: Boolean): ProgressDialog {
+        return ProgressDialog(this).apply {
+            setCancelable(isCancelable)
+            setCanceledOnTouchOutside(false)
+            setMessage(message)
+        }
     }
 }

@@ -36,6 +36,7 @@ import com.project.proabt.adapters.ChatAdapter
 import com.project.proabt.attachment_types.CameraActivity
 import com.project.proabt.attachment_types.ReviewImageActivity
 import com.project.proabt.attachment_types.ReviewVideoActivity
+import com.project.proabt.attachment_types.VideoCameraActivity
 import com.project.proabt.databinding.ActivityChatBinding
 import com.project.proabt.models.*
 import com.project.proabt.utils.KeyboardVisibilityUtil
@@ -125,13 +126,16 @@ class ChatActivity : AppCompatActivity() {
             binding.msgRv.scrollToPosition(messages.size - 1)
         }
         setSupportActionBar(binding.toolbar)
+        checkInitialMessage()
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener {
-            checkInitialMessage()
-            mediaPlayer!!.stop()
-            mediaPlayer!!.release()
-            mediaPlayer=null
+            if(mediaPlayer!=null) {
+                mediaPlayer!!.stop()
+                mediaPlayer!!.release()
+                mediaPlayer = null
+            }
+            startActivity(Intent(this,MainActivity::class.java))
         }
         FirebaseFirestore.getInstance().collection("users").document(mCurrentUid).get()
             .addOnSuccessListener {
@@ -225,6 +229,20 @@ class ChatActivity : AppCompatActivity() {
             intent.putExtra(IMAGE, image)
             startActivity(intent)
         }
+        binding.btnVideoCameraButton.setOnClickListener {
+            val intent = Intent(this, VideoCameraActivity::class.java)
+            intent.putExtra(UID, friendId)
+            intent.putExtra(NAME, name)
+            intent.putExtra(IMAGE, image)
+            startActivity(intent)
+        }
+        binding.btnVideoCamera.setOnClickListener {
+            val intent = Intent(this, VideoCameraActivity::class.java)
+            intent.putExtra(UID, friendId)
+            intent.putExtra(NAME, name)
+            intent.putExtra(IMAGE, image)
+            startActivity(intent)
+        }
         binding.btnDocButton.setOnClickListener {
             pickDocument()
         }
@@ -267,7 +285,6 @@ class ChatActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        checkInitialMessage()
         Log.d("Detached","Detached")
         if(mediaPlayer!=null){
             Log.d("Detached","Detached")
@@ -275,6 +292,7 @@ class ChatActivity : AppCompatActivity() {
             mediaPlayer!!.release()
             mediaPlayer=null
         }
+        startActivity(Intent(this,MainActivity::class.java))
     }
 
     private fun pickImageFromGallery() {
@@ -700,10 +718,8 @@ class ChatActivity : AppCompatActivity() {
                         count = 0
                     )
                     getInbox(mCurrentUid, friendId!!).setValue(inboxMap).addOnCompleteListener {
-                        startActivity(Intent(this, MainActivity::class.java))
                     }
                 } else {
-                    startActivity(Intent(this, MainActivity::class.java))
                 }
             }
     }

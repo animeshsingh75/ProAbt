@@ -1,4 +1,4 @@
-package com.project.proabt.attachment_types
+package com.project.proabt.auth
 
 import android.Manifest
 import android.app.AlertDialog
@@ -17,27 +17,16 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.project.proabt.IMAGE
-import com.project.proabt.NAME
 import com.project.proabt.R
-import com.project.proabt.UID
-import com.project.proabt.databinding.ActivityCameraBinding
+import com.project.proabt.databinding.ActivityInitialProfileCameraBinding
+import com.project.proabt.setting.ProfileCameraActivity
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CameraActivity : AppCompatActivity() {
-    lateinit var binding: ActivityCameraBinding
-    private val friendId by lazy {
-        intent.getStringExtra(UID)
-    }
-    private val name by lazy {
-        intent.getStringExtra(NAME)
-    }
-    private val image by lazy {
-        intent.getStringExtra(IMAGE)
-    }
+class InitialProfileCameraActivity : AppCompatActivity() {
 
+    lateinit var binding: ActivityInitialProfileCameraBinding
     companion object {
         @JvmStatic
         val CAMERA_PERM_CODE = 422
@@ -85,12 +74,10 @@ class CameraActivity : AppCompatActivity() {
             Toast.makeText(this, "Camera not available", Toast.LENGTH_SHORT).show()
             return
         }
-        val photoFile = File(
-            getOutputDirectory(this),
+        val photoFile = File(getOutputDirectory(this),
             SimpleDateFormat(
                 "yyyyMMddHHmmssSSS", Locale.US
-            ).format(System.currentTimeMillis()) + ".jpg"
-        )
+            ).format(System.currentTimeMillis()))
         val outputFileOptions =
             ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
@@ -103,11 +90,7 @@ class CameraActivity : AppCompatActivity() {
                     val msg = "Photo capture succeeded: $savedUri"
                     Log.d("PhotoUri", "PhotoUri:$savedUri")
                     Log.d("PhotoUri", "PhotoUri:${photoFile.absolutePath}")
-                    val intent = Intent(this@CameraActivity, ReviewImageActivity::class.java)
-                    intent.putExtra(UID, friendId)
-                    intent.putExtra(NAME, name)
-                    intent.putExtra(IMAGE, image)
-                    intent.putExtra("SENTFROM","CAM")
+                    val intent = Intent(this@InitialProfileCameraActivity, InitialReviewProfileActivity::class.java)
                     intent.putExtra("SENTPHOTO", savedUri.toString())
                     intent.putExtra("PicturePath", photoFile.absolutePath)
                     startActivity(intent)
@@ -115,7 +98,7 @@ class CameraActivity : AppCompatActivity() {
 
                 override fun onError(exception: ImageCaptureException) {
                     Toast.makeText(
-                        this@CameraActivity,
+                        this@InitialProfileCameraActivity,
                         "Image Saving Failed",
                         Toast.LENGTH_SHORT
                     )
@@ -126,18 +109,14 @@ class CameraActivity : AppCompatActivity() {
             }
         )
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityCameraBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
+        binding= ActivityInitialProfileCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         askCameraPermission()
 
         binding.btnTakePhoto.setOnClickListener { takePhoto() }
-
     }
-
     fun getOutputDirectory(context: Context): File {
         val appContext = context.applicationContext
         val mediaDir = context.externalMediaDirs.firstOrNull()?.let {
@@ -146,13 +125,12 @@ class CameraActivity : AppCompatActivity() {
         return if (mediaDir != null && mediaDir.exists())
             mediaDir else appContext.filesDir
     }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == CAMERA_PERM_CODE) {
+        if (requestCode == ProfileCameraActivity.CAMERA_PERM_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startCamera()
             } else {

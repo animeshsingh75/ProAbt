@@ -62,6 +62,9 @@ class ReviewVideoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityReviewVideoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        progressDialog = createProgressDialog("Getting the video. Please wait", false)
+        progressDialog.show()
+        uploadVideo(sentvideo)
         Log.d("PhotoUrifromReviw", sentvideo.toString())
         binding.btnBack.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
@@ -76,16 +79,10 @@ class ReviewVideoActivity : AppCompatActivity() {
             }
         binding.btnSend.setOnClickListener {
             Log.d("ClickedFl", "Clicked")
-            uploadVideo(sentvideo)
-            progressDialog = createProgressDialog("Sending a video. Please wait", false)
+            sendMessage(downloadUrl)
+            progressDialog = createProgressDialog("Sending the video. Please wait", false)
             progressDialog.show()
         }
-        val mediaController=MediaController(this)
-        mediaController.setAnchorView(binding.sentVideo)
-        binding.sentVideo.setMediaController(mediaController)
-        binding.sentVideo.setVideoURI(sentvideo)
-        binding.sentVideo.requestFocus()
-        binding.sentVideo.start()
         binding.nameTv.text = name
         Picasso.get()
             .load(image)
@@ -107,8 +104,17 @@ class ReviewVideoActivity : AppCompatActivity() {
         }).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 downloadUrl = task.result.toString()
-                sendMessage(downloadUrl)
-
+                val mediaController= MediaController(this)
+                mediaController.setAnchorView(binding.sentVideo)
+                binding.sentVideo.setMediaController(mediaController)
+                Log.d("TaskResult",task.result.toString())
+                Log.d("TaskResult",downloadUrl)
+                binding.sentVideo.setVideoURI(task.result)
+                binding.sentVideo.requestFocus()
+                binding.sentVideo.setOnPreparedListener {
+                    progressDialog.dismiss()
+                    binding.sentVideo.start()
+                }
             }
         }.addOnFailureListener {
 
