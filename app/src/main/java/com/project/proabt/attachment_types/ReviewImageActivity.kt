@@ -27,6 +27,7 @@ import com.squareup.picasso.Picasso
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import java.io.IOException
+import java.util.*
 
 
 class ReviewImageActivity : AppCompatActivity() {
@@ -149,6 +150,7 @@ class ReviewImageActivity : AppCompatActivity() {
     }
 
     private fun updateLastMessage(message: Message) {
+        val InvertedDate=Long.MAX_VALUE- Date().time
         val inboxMap = Inbox(
             message.msg,
             friendId!!,
@@ -157,22 +159,26 @@ class ReviewImageActivity : AppCompatActivity() {
             name!!.toUpperCase(),
             image!!,
             count = 0,
-            type = "IMAGE"
+            type = "IMAGE",
+            invertedDate = InvertedDate
         )
         getInbox(mCurrentUid, friendId!!).setValue(inboxMap).addOnSuccessListener {
             getInbox(friendId!!, mCurrentUid).addListenerForSingleValueEvent(object :
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val value = snapshot.getValue(Inbox::class.java)
+                    val InvertedDate=Long.MAX_VALUE-Date().time
                     inboxMap.apply {
                         from = message.senderId
                         name = currentUser.name
                         image = currentUser.thumbImage
                         count = 1
+                        invertedDate=InvertedDate
                     }
                     value?.let {
                         if (it.from == message.senderId) {
                             inboxMap.count = value.count + 1
+                            inboxMap.invertedDate=InvertedDate
                         }
                     }
                     getInbox(friendId!!, mCurrentUid).setValue(inboxMap)

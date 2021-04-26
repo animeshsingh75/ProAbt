@@ -9,10 +9,11 @@ data class User(
     val deviceToken: String,
     val status: String,
     val onlineStatus: String,
+    var creator:Boolean=false,
     val rating: Float = 0F,
     val skills: List<String>
 ) {
-    constructor() : this("","", "", "", "", "", "", "", 0F, listOf())
+    constructor() : this("","", "", "", "", "", "", "",false, 0F, listOf())
     constructor(
         name: String,
         upper_name: String=name.toUpperCase(),

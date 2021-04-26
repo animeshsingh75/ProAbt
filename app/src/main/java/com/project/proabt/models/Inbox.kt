@@ -12,7 +12,8 @@ data class Inbox(
     var image: String,
     val time: Date = Date(),
     var count: Int = 0,
-    val type: String="TEXT"
+    val type: String="TEXT",
+    var invertedDate:Long
 ) {
-    constructor() : this("", "","", "", "", "",Date(), 0,"")
+    constructor() : this("", "","", "", "", "",Date(), 0,"",0L)
 }

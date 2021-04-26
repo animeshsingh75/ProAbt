@@ -24,6 +24,7 @@ import com.project.proabt.models.Inbox
 import com.project.proabt.models.Message
 import com.project.proabt.models.User
 import com.squareup.picasso.Picasso
+import java.util.*
 
 class ReviewVideoActivity : AppCompatActivity() {
     private val friendId by lazy {
@@ -140,6 +141,7 @@ class ReviewVideoActivity : AppCompatActivity() {
     }
 
     private fun updateLastMessage(message: Message) {
+        val InvertedDate=Long.MAX_VALUE- Date().time
         val inboxMap = Inbox(
             message.msg,
             friendId!!,
@@ -148,22 +150,26 @@ class ReviewVideoActivity : AppCompatActivity() {
             name!!.toUpperCase(),
             image!!,
             count = 0,
-            type = "VIDEO"
+            type = "VIDEO",
+            invertedDate = InvertedDate
         )
         getInbox(mCurrentUid, friendId!!).setValue(inboxMap).addOnSuccessListener {
             getInbox(friendId!!, mCurrentUid).addListenerForSingleValueEvent(object :
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    val InvertedDate=Long.MAX_VALUE-Date().time
                     val value = snapshot.getValue(Inbox::class.java)
                     inboxMap.apply {
                         from = message.senderId
                         name = currentUser.name
                         image = currentUser.thumbImage
                         count = 1
+                        invertedDate=InvertedDate
                     }
                     value?.let {
                         if (it.from == message.senderId) {
                             inboxMap.count = value.count + 1
+                            inboxMap.invertedDate=InvertedDate
                         }
                     }
                     getInbox(friendId!!, mCurrentUid).setValue(inboxMap)

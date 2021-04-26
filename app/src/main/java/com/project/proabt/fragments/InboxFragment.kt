@@ -53,7 +53,7 @@ class InboxFragment : Fragment() {
     private fun setupAdapter() {
 
         val baseQuery: Query =
-            mDatabase.reference.child("chats").child(auth.uid!!)
+            mDatabase.reference.child("chats").child(auth.uid!!).orderByChild("invertedDate")
 
         val options = FirebaseRecyclerOptions.Builder<Inbox>()
             .setLifecycleOwner(viewLifecycleOwner)

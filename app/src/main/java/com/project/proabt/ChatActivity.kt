@@ -661,6 +661,8 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun updateLastMessage(message: Message, type: String) {
+        val InvertedDate=Long.MAX_VALUE-Date().time
+        Log.d("Inverted",(Long.MAX_VALUE-InvertedDate).toString())
         val inboxMap = Inbox(
             message.msg,
             friendId!!,
@@ -669,23 +671,27 @@ class ChatActivity : AppCompatActivity() {
             name!!.toUpperCase(),
             image!!,
             count = 0,
-            type = type
+            type = type,
+            invertedDate = InvertedDate
         )
         getInbox(mCurrentUid, friendId!!).setValue(inboxMap).addOnSuccessListener {
             getInbox(friendId!!, mCurrentUid).addListenerForSingleValueEvent(object :
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val value = snapshot.getValue(Inbox::class.java)
+                    val InvertedDate=Long.MAX_VALUE-Date().time
                     inboxMap.apply {
                         from = message.senderId
                         name = currentUser.name
                         upper_name = currentUser.name.toUpperCase()
                         image = currentUser.thumbImage
                         count = 1
+                        invertedDate=InvertedDate
                     }
                     value?.let {
                         if (it.from == message.senderId) {
                             inboxMap.count = value.count + 1
+                            inboxMap.invertedDate=InvertedDate
                         }
                     }
                     getInbox(friendId!!, mCurrentUid).setValue(inboxMap)
@@ -715,7 +721,8 @@ class ChatActivity : AppCompatActivity() {
                         name!!,
                         name!!.toUpperCase(),
                         image!!,
-                        count = 0
+                        count = 0,
+                        invertedDate = 0
                     )
                     getInbox(mCurrentUid, friendId!!).setValue(inboxMap).addOnCompleteListener {
                     }

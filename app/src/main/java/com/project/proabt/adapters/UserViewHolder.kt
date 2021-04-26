@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso
 class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(user: User, onClick: (name: String, photo: String, id: String) -> Unit) =
         with(itemView) {
-            val timeTv = itemView.findViewById<TextView>(R.id.timeTv)
+            val creatorLayout = itemView.findViewById<LinearLayout>(R.id.creatorLayout)
             val titleTv = itemView.findViewById<TextView>(R.id.titleTv)
             val userImgView = itemView.findViewById<ShapeableImageView>(R.id.userImgView1)
             val ratingLayout = itemView.findViewById<RelativeLayout>(R.id.rating_layout)
@@ -27,7 +27,9 @@ class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val skillTv2 = itemView.findViewById<TextView>(R.id.skillTv2)
             val skillLayout3 = itemView.findViewById<RelativeLayout>(R.id.skillLayout3)
             val skillTv3 = itemView.findViewById<TextView>(R.id.skillTv3)
-            timeTv.isVisible = false
+            if(user.creator){
+                creatorLayout.isVisible=true
+            }
             ratingLayout.isVisible=true
             skillsContainer.isVisible=true
             val rating=String.format("%.1f",user.rating)
