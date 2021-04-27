@@ -31,7 +31,7 @@ and they are ordered by the rating other users have given them.
    * Firebase Realtime Database
    * Firebase Firestore
 
-## Libraries Used(Only major ones specified)
+## Libraries Used
 * Picasso
 * Glide
 * Android Image Cropper(ArthurHub)
