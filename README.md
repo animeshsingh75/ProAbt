@@ -12,7 +12,7 @@ and they are ordered by the rating other users have given them.
 * <a href="#pagesorfeaturesorcomponents">Pages </a>
 * <a href="#tech-and-framework-used">Tech and framework used </a>
 * <a href="#link-to-the-project ">Link to the project  </a>
-* <a href="#api ">API and Libraries</a>
+* <a href="#libraries-used">Libraries</a>
 * <a href="#screenshots">Screenshots </a>
 
 ## Pages or Features or Components
@@ -31,7 +31,7 @@ and they are ordered by the rating other users have given them.
    * Firebase Realtime Database
    * Firebase Firestore
 
-## APIs /Libraries Used(Only major ones specified)
+## Libraries Used(Only major ones specified)
 * Picasso
 * Glide
 * Android Image Cropper(ArthurHub)
