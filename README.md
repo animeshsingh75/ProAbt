@@ -3,7 +3,7 @@
 
 <br>
 <p><b>ProAbt in a nutshell is interactive <i>stackoverflow</i>. Here users can discuss their doubts in form of audio,video,photos and text.Users can clear their queries 
-pertaining to <i>C++, Java, Python, Web development, Android Development and even ML and AI.</i> You can search users by name, skills
+ pertaining to <i>C++, Java, Python, Web development, Android Development</i> and even <i>ML and AI.</i> You can search users by name, skills
 and they are ordered by the rating other users have given them.
  <br/></b></p>
 
@@ -16,7 +16,12 @@ and they are ordered by the rating other users have given them.
 * <a href="#screenshots">Screenshots </a>
 
 ## Pages or Features or Components
-__Explain the project in further detail it can either the pages or the feature of the project or even the various components of the page
+* Login Activity
+* OTP Activity
+* SignUp Activity
+* People / Inbox Activity
+* Settings Activity
+* Chat Activity
 
  ## Tech and framework used
 * Kotlin
