@@ -9,19 +9,10 @@ and they are ordered by the rating other users have given them.
 
 <h2 align="center">Table of contents </h2>
 
-* <a href="#pages-in-the-application">Pages </a>
 * <a href="#tech-and-framework-used">Tech and framework used </a>
-* <a href="#link-to-the-project ">Link to the project  </a>
 * <a href="#libraries-used">Libraries</a>
+* <a href="#link-to-the-project ">Link to the project  </a>
 * <a href="#screenshots">Screenshots </a>
-
-## Pages in the application
-* Login Activity
-* OTP Activity
-* SignUp Activity
-* People / Inbox Activity
-* Settings Activity
-* Chat Activity
 
  ## Tech and framework used
 * Kotlin
