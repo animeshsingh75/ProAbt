@@ -31,7 +31,7 @@ and they are ordered by the rating other users have given them.
 
 ## Link to the project 
 
-https://xyz.com/
+https://play.google.com/store/apps/details?id=com.project.proabt
 
 ## Screenshots
 <p float="left">
