@@ -40,19 +40,22 @@ https://play.google.com/store/apps/details?id=com.project.proabt
 <img src="App Screenshots/2.png" width="225" height="500"/>
 &nbsp;&nbsp;
 <img src="App Screenshots/3.png" width="225" height="500"/>
-&nbsp;&nbsp;
-<img src="App Screenshots/4.png" width="225" height="500"/>
  <br/>
  </p>
 
 <p float="left">
+<img src="App Screenshots/4.png" width="225" height="500"/>
+  &nbsp;&nbsp;
 <img src="App Screenshots/5.png" width="225" height="500"/>
 &nbsp;&nbsp;
 <img src="App Screenshots/6.png" width="225" height="500"/>
 &nbsp;&nbsp;
+ <br/>
+ </p>
+ <p float="left">
 <img src="App Screenshots/7.png" width="225" height="500"/>
 &nbsp;&nbsp;
-<img src="App Screenshots/8.png" width="224" height="500"/>
+<img src="App Screenshots/8.png" width="224" height="500"/>l̥
  <br/>
  </p>
 
